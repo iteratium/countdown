@@ -62,3 +62,6 @@ GitHub Pages, from this repo:
 
 - Settings → Pages → Source: Deploy from a branch → `main`, folder `/ (root)`
 - No build step — it's served as-is
+- Custom domain: `countdown.ketwork.in` (see `CNAME`). Needs a DNS `CNAME`
+  record for `countdown` pointing at `iteratium.github.io`, plus "Enforce
+  HTTPS" ticked in Settings → Pages once DNS has propagated.
