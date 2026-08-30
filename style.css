@@ -1,0 +1,106 @@
+:root {
+  --bg: #fdf6ec;
+  --text: #4a3b32;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+main {
+  text-align: center;
+  padding: 2rem;
+}
+
+#cat {
+  width: min(70vw, 320px);
+  height: min(70vw, 320px);
+  margin: 0 auto 1.5rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #fff;
+}
+
+#cat img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+#countdown {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+#clock {
+  font-size: 1.1rem;
+  opacity: 0.6;
+  margin: 0.25rem 0 0;
+  font-variant-numeric: tabular-nums;
+}
+
+#attribution {
+  font-size: 0.75rem;
+  opacity: 0.5;
+  margin: 1rem 0 0;
+}
+
+#attribution a {
+  color: inherit;
+}
+
+body.friday-night {
+  background: #2e2b3f;
+  color: #fdf6ec;
+}
+
+#confetti {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -10px;
+  width: 8px;
+  height: 14px;
+  opacity: 0.9;
+  animation-name: confetti-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes confetti-fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}

@@ -1,0 +1,397 @@
+{
+  "_comment": "Cat gifs classified by expression, sourced from the Giphy API (search query is the gif's giphySearch field) and downloaded once into images/ \u2014 the deployed site does not call Giphy at runtime. 'stage' is a 0-4 position on the workday mood scale (0 = dreading it, 4 = almost free). 'offClock' marks images used outside the 9am-6pm workday window. Giphy content usage requires a 'Powered By GIPHY' attribution per their API terms \u2014 see README.",
+  "source": "https://developers.giphy.com/",
+  "stageLabels": [
+    "Dreading It",
+    "Grumpy",
+    "Hanging In There",
+    "Winding Down",
+    "Almost Free"
+  ],
+  "images": [
+    {
+      "file": "dread-1.gif",
+      "alt": "scared cat GIF",
+      "giphySearch": "scared cat",
+      "stage": 0
+    },
+    {
+      "file": "dread-2.gif",
+      "alt": "scared cat GIF",
+      "giphySearch": "scared cat",
+      "stage": 0
+    },
+    {
+      "file": "dread-3.gif",
+      "alt": "Scared Cat GIF",
+      "giphySearch": "scared cat",
+      "stage": 0
+    },
+    {
+      "file": "dread-4.gif",
+      "alt": "Shocked Cat GIF",
+      "giphySearch": "scared cat",
+      "stage": 0
+    },
+    {
+      "file": "dread-5.gif",
+      "alt": "scared cat GIF",
+      "giphySearch": "scared cat",
+      "stage": 0
+    },
+    {
+      "file": "dread-6.gif",
+      "alt": "Omg Cat Scared Kitty GIF",
+      "giphySearch": "scared cat",
+      "stage": 0
+    },
+    {
+      "file": "dread-7.gif",
+      "alt": "Surprised Cat GIF",
+      "giphySearch": "scared cat",
+      "stage": 0
+    },
+    {
+      "file": "dread-8.gif",
+      "alt": "sad cat GIF",
+      "giphySearch": "sad cat",
+      "stage": 0
+    },
+    {
+      "file": "dread-9.gif",
+      "alt": "Scared Cat GIF",
+      "giphySearch": "nervous cat",
+      "stage": 0
+    },
+    {
+      "file": "dread-10.gif",
+      "alt": "Nervous Cat GIF by sheepfilms",
+      "giphySearch": "nervous cat",
+      "stage": 0
+    },
+    {
+      "file": "dread-11.gif",
+      "alt": "scared cat GIF",
+      "giphySearch": "nervous cat",
+      "stage": 0
+    },
+    {
+      "file": "dread-12.gif",
+      "alt": "Sweating Blue Cat GIF",
+      "giphySearch": "nervous cat",
+      "stage": 0
+    },
+    {
+      "file": "grumpy-1.gif",
+      "alt": "Anger Cat Angry GIF",
+      "giphySearch": "angry cat",
+      "stage": 1
+    },
+    {
+      "file": "grumpy-2.gif",
+      "alt": "Cat Angry GIF",
+      "giphySearch": "angry cat",
+      "stage": 1
+    },
+    {
+      "file": "grumpy-3.gif",
+      "alt": "Angry Cat GIF by Y\u00eau Lu",
+      "giphySearch": "angry cat",
+      "stage": 1
+    },
+    {
+      "file": "grumpy-4.gif",
+      "alt": "Angry Funny Cat GIF by Bichi Mao",
+      "giphySearch": "angry cat",
+      "stage": 1
+    },
+    {
+      "file": "grumpy-5.gif",
+      "alt": "Angry Cat GIF",
+      "giphySearch": "angry cat",
+      "stage": 1
+    },
+    {
+      "file": "grumpy-6.gif",
+      "alt": "Grumpy Cat GIF",
+      "giphySearch": "grumpy cat",
+      "stage": 1
+    },
+    {
+      "file": "grumpy-7.gif",
+      "alt": "Angry Cat Disgusted Face GIF",
+      "giphySearch": "grumpy cat",
+      "stage": 1
+    },
+    {
+      "file": "grumpy-8.gif",
+      "alt": "grumpy cat GIF",
+      "giphySearch": "grumpy cat",
+      "stage": 1
+    },
+    {
+      "file": "grumpy-9.gif",
+      "alt": "grumpy cat GIF",
+      "giphySearch": "grumpy cat",
+      "stage": 1
+    },
+    {
+      "file": "grumpy-10.gif",
+      "alt": "grumpy cat GIF",
+      "giphySearch": "grumpy cat",
+      "stage": 1
+    },
+    {
+      "file": "grumpy-11.gif",
+      "alt": "angry cat GIF",
+      "giphySearch": "mad cat",
+      "stage": 1
+    },
+    {
+      "file": "grumpy-12.gif",
+      "alt": "Angry Cat GIF",
+      "giphySearch": "mad cat",
+      "stage": 1
+    },
+    {
+      "file": "restless-1.gif",
+      "alt": "Cat Confuse GIF by Rizal Althur",
+      "giphySearch": "confused cat",
+      "stage": 2
+    },
+    {
+      "file": "restless-2.gif",
+      "alt": "Confused Cat GIF",
+      "giphySearch": "confused cat",
+      "stage": 2
+    },
+    {
+      "file": "restless-3.gif",
+      "alt": "Confused Cat GIF",
+      "giphySearch": "confused cat",
+      "stage": 2
+    },
+    {
+      "file": "restless-4.gif",
+      "alt": "Confused Cat GIF",
+      "giphySearch": "confused cat",
+      "stage": 2
+    },
+    {
+      "file": "restless-5.gif",
+      "alt": "No Way Silly Cat GIF",
+      "giphySearch": "confused cat",
+      "stage": 2
+    },
+    {
+      "file": "restless-6.gif",
+      "alt": "Cat What GIF",
+      "giphySearch": "confused cat",
+      "stage": 2
+    },
+    {
+      "file": "restless-7.gif",
+      "alt": "Hungry Cat Food GIF by Poku Meow Meow Meow",
+      "giphySearch": "hungry cat",
+      "stage": 2
+    },
+    {
+      "file": "restless-8.gif",
+      "alt": "hungry cat GIF",
+      "giphySearch": "hungry cat",
+      "stage": 2
+    },
+    {
+      "file": "restless-9.gif",
+      "alt": "Hungry Black Cat GIF",
+      "giphySearch": "hungry cat",
+      "stage": 2
+    },
+    {
+      "file": "restless-10.gif",
+      "alt": "Excited Feed Me GIF by Morris the 9Lives Cat",
+      "giphySearch": "hungry cat",
+      "stage": 2
+    },
+    {
+      "file": "restless-11.gif",
+      "alt": "Bored Cat GIF by STAGEWOLF",
+      "giphySearch": "bored cat",
+      "stage": 2
+    },
+    {
+      "file": "restless-12.gif",
+      "alt": "Bored Cat GIF",
+      "giphySearch": "bored cat",
+      "stage": 2
+    },
+    {
+      "file": "winding-down-1.gif",
+      "alt": "Cat Relaxing GIF",
+      "giphySearch": "relaxed cat",
+      "stage": 3,
+      "offClock": true
+    },
+    {
+      "file": "winding-down-2.gif",
+      "alt": "cat chill GIF",
+      "giphySearch": "relaxed cat",
+      "stage": 3,
+      "offClock": true
+    },
+    {
+      "file": "winding-down-3.gif",
+      "alt": "Happy Cat GIF",
+      "giphySearch": "relaxed cat",
+      "stage": 3,
+      "offClock": true
+    },
+    {
+      "file": "winding-down-4.gif",
+      "alt": "Cat Relaxing GIF by The Dodo",
+      "giphySearch": "relaxed cat",
+      "stage": 3,
+      "offClock": true
+    },
+    {
+      "file": "winding-down-5.gif",
+      "alt": "Couch Potato Cat GIF",
+      "giphySearch": "lazy cat",
+      "stage": 3,
+      "offClock": true
+    },
+    {
+      "file": "winding-down-6.gif",
+      "alt": "Cat Resting GIF",
+      "giphySearch": "lazy cat",
+      "stage": 3,
+      "offClock": true
+    },
+    {
+      "file": "winding-down-7.gif",
+      "alt": "lazy cat GIF",
+      "giphySearch": "lazy cat",
+      "stage": 3,
+      "offClock": true
+    },
+    {
+      "file": "winding-down-8.gif",
+      "alt": "tired cat GIF",
+      "giphySearch": "lazy cat",
+      "stage": 3,
+      "offClock": true
+    },
+    {
+      "file": "winding-down-9.gif",
+      "alt": "Nap Sleeping Cat GIF",
+      "giphySearch": "sleepy cat",
+      "stage": 3,
+      "offClock": true
+    },
+    {
+      "file": "winding-down-10.gif",
+      "alt": "Tired Cat GIF",
+      "giphySearch": "sleepy cat",
+      "stage": 3,
+      "offClock": true
+    },
+    {
+      "file": "winding-down-11.gif",
+      "alt": "Sleepy Cat GIF",
+      "giphySearch": "sleepy cat",
+      "stage": 3,
+      "offClock": true
+    },
+    {
+      "file": "winding-down-12.gif",
+      "alt": "Cat Chilling GIF",
+      "giphySearch": "chill cat",
+      "stage": 3,
+      "offClock": true
+    },
+    {
+      "file": "almost-free-1.gif",
+      "alt": "Happy Cat GIF",
+      "giphySearch": "happy cat",
+      "stage": 4,
+      "offClock": true
+    },
+    {
+      "file": "almost-free-2.gif",
+      "alt": "Cats Happy Cat GIF",
+      "giphySearch": "happy cat",
+      "stage": 4,
+      "offClock": true
+    },
+    {
+      "file": "almost-free-3.gif",
+      "alt": "happy cat GIF",
+      "giphySearch": "happy cat",
+      "stage": 4,
+      "offClock": true
+    },
+    {
+      "file": "almost-free-4.gif",
+      "alt": "Excited Cat GIF",
+      "giphySearch": "excited cat",
+      "stage": 4,
+      "offClock": true
+    },
+    {
+      "file": "almost-free-5.gif",
+      "alt": "Excited Cat GIF",
+      "giphySearch": "excited cat",
+      "stage": 4,
+      "offClock": true
+    },
+    {
+      "file": "almost-free-6.gif",
+      "alt": "Excited Cat GIF",
+      "giphySearch": "excited cat",
+      "stage": 4,
+      "offClock": true
+    },
+    {
+      "file": "almost-free-7.gif",
+      "alt": "Happy Cat GIF by Pok\u00e9mon",
+      "giphySearch": "excited cat",
+      "stage": 4,
+      "offClock": true
+    },
+    {
+      "file": "almost-free-8.gif",
+      "alt": "Excited Cat GIF",
+      "giphySearch": "excited cat",
+      "stage": 4,
+      "offClock": true
+    },
+    {
+      "file": "almost-free-9.gif",
+      "alt": "party cat GIF",
+      "giphySearch": "celebrating cat",
+      "stage": 4,
+      "offClock": true
+    },
+    {
+      "file": "almost-free-10.gif",
+      "alt": "Black Cat Party Time GIF",
+      "giphySearch": "celebrating cat",
+      "stage": 4,
+      "offClock": true
+    },
+    {
+      "file": "almost-free-11.gif",
+      "alt": "Cat Dance GIF",
+      "giphySearch": "celebrating cat",
+      "stage": 4,
+      "offClock": true
+    },
+    {
+      "file": "almost-free-12.gif",
+      "alt": "Happy Birthday Funny Cat GIF",
+      "giphySearch": "celebrating cat",
+      "stage": 4,
+      "offClock": true
+    }
+  ]
+}
