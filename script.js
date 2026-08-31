@@ -2,18 +2,32 @@ const WORK_START_HOUR = 9;
 const WORK_END_HOUR = 18;
 const REFRESH_CAP_MS = 15 * 60 * 1000;
 
+const catEl = document.getElementById("cat");
 const memeImg = document.getElementById("meme");
 const moodEl = document.getElementById("mood");
 const countdownEl = document.getElementById("countdown");
 const clockEl = document.getElementById("clock");
 const confettiEl = document.getElementById("confetti");
 const quoteEl = document.getElementById("quote");
+const progressEl = document.getElementById("progress");
+const walkerEl = document.getElementById("walker");
 
 const CONFETTI_COLORS = ["#f4a259", "#e07a5f", "#81b29a", "#f2cc8f", "#3d405b"];
+
+const ACCENT_COLORS = {
+  "stage-0": "#f4a259",
+  "stage-1": "#e07a5f",
+  "stage-2": "#81b29a",
+  "stage-3": "#f2cc8f",
+  "stage-4": "#3d405b",
+  offclock: "#81b29a",
+  "offclock-friday": "#f2cc8f",
+};
 
 let memes = null;
 let quotes = null;
 let currentKey = null;
+let currentState = null;
 let memeTimer = null;
 
 function workBounds(now) {
@@ -36,6 +50,12 @@ function formatCountdown(ms) {
   const m = Math.floor((totalSeconds % 3600) / 60);
   const s = totalSeconds % 60;
   return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+function dayProgress(now) {
+  const { start, end } = workBounds(now);
+  const ratio = (now - start) / (end - start);
+  return Math.min(100, Math.max(0, ratio * 100));
 }
 
 function computeState(now) {
@@ -66,6 +86,9 @@ function pickMeme(pool) {
   const choice = pool[Math.floor(Math.random() * pool.length)];
   memeImg.src = `images/${choice.file}`;
   memeImg.alt = choice.alt;
+  memeImg.classList.remove("pop");
+  void memeImg.offsetWidth;
+  memeImg.classList.add("pop");
 }
 
 function pickQuote(key) {
@@ -105,15 +128,23 @@ function clearConfetti() {
 }
 
 function applyState(state) {
+  currentState = state;
   if (state.key === currentKey) return;
   currentKey = state.key;
   moodEl.textContent = state.label;
   document.body.classList.toggle("friday-night", state.friday);
+  document.documentElement.style.setProperty("--accent", ACCENT_COLORS[state.key]);
   if (state.friday) launchConfetti();
   else clearConfetti();
   pickContent(state);
   scheduleMemeRefresh(state);
 }
+
+catEl.addEventListener("click", () => {
+  if (!currentState) return;
+  pickContent(currentState);
+  scheduleMemeRefresh(currentState);
+});
 
 function tick() {
   const now = new Date();
@@ -124,6 +155,10 @@ function tick() {
     timeZoneName: "short",
   });
   applyState(computeState(now));
+
+  const percent = dayProgress(now);
+  progressEl.setAttribute("aria-valuenow", Math.round(percent));
+  progressEl.style.setProperty("--percent", percent);
 }
 
 Promise.all([
