@@ -1,0 +1,51 @@
+{
+  "stage-0": [
+    "The day is young. So are your excuses.",
+    "One email at a time.",
+    "You've survived every Monday so far. Odds are good.",
+    "Coffee first. Ambition second.",
+    "Nine hours is just 540 minutes. No big deal."
+  ],
+  "stage-1": [
+    "This too shall pass. Slowly.",
+    "Halfway to lunch, if you squint.",
+    "Deep breaths. Shallow deadlines.",
+    "You are doing better than you think. Probably.",
+    "Grumpy is a valid personality for the next hour."
+  ],
+  "stage-2": [
+    "Hanging in there is a full-time skill.",
+    "The finish line exists. Trust the process.",
+    "You've made it this far without incident. Keep going.",
+    "Small progress is still progress.",
+    "Somewhere, this counts as productivity."
+  ],
+  "stage-3": [
+    "The light at the end of the tunnel is not a train. Probably.",
+    "Winding down never felt so far away.",
+    "Almost there. Define 'almost' loosely.",
+    "Your desk chair believes in you.",
+    "Close enough to start mentally logging off."
+  ],
+  "stage-4": [
+    "So close you can taste the commute.",
+    "Free is a state of mind, and also a clock.",
+    "Last stretch. Do not trip now.",
+    "The end is nigh, and it is glorious.",
+    "You can already smell freedom. Or that's just coffee."
+  ],
+  "offclock": [
+    "Off the clock, on your own time.",
+    "The best meeting is the one that already ended.",
+    "Rest is productive too.",
+    "Nothing on this screen is your problem right now.",
+    "Go be a person for a while."
+  ],
+  "offclock-friday": [
+    "It's Friday. Act accordingly.",
+    "The weekend has entered the chat.",
+    "Two glorious days stretch before you.",
+    "You earned this. Don't check your email.",
+    "TGIF, and every letter of it is true."
+  ]
+}

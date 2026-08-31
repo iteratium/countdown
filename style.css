@@ -65,6 +65,14 @@ h1 {
   font-variant-numeric: tabular-nums;
 }
 
+#quote {
+  font-size: 0.95rem;
+  font-style: italic;
+  opacity: 0.75;
+  margin: 1rem auto 0;
+  max-width: 28ch;
+}
+
 #attribution {
   font-size: 0.75rem;
   opacity: 0.5;

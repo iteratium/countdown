@@ -7,10 +7,12 @@ const moodEl = document.getElementById("mood");
 const countdownEl = document.getElementById("countdown");
 const clockEl = document.getElementById("clock");
 const confettiEl = document.getElementById("confetti");
+const quoteEl = document.getElementById("quote");
 
 const CONFETTI_COLORS = ["#f4a259", "#e07a5f", "#81b29a", "#f2cc8f", "#3d405b"];
 
 let memes = null;
+let quotes = null;
 let currentKey = null;
 let memeTimer = null;
 
@@ -66,12 +68,22 @@ function pickMeme(pool) {
   memeImg.alt = choice.alt;
 }
 
-function scheduleMemeRefresh(pool) {
+function pickQuote(key) {
+  const pool = quotes[key];
+  quoteEl.textContent = pool[Math.floor(Math.random() * pool.length)];
+}
+
+function pickContent(state) {
+  pickMeme(state.pool);
+  pickQuote(state.key);
+}
+
+function scheduleMemeRefresh(state) {
   clearTimeout(memeTimer);
-  const interval = REFRESH_CAP_MS / pool.length;
+  const interval = REFRESH_CAP_MS / state.pool.length;
   memeTimer = setTimeout(() => {
-    pickMeme(pool);
-    scheduleMemeRefresh(pool);
+    pickContent(state);
+    scheduleMemeRefresh(state);
   }, interval);
 }
 
@@ -99,8 +111,8 @@ function applyState(state) {
   document.body.classList.toggle("friday-night", state.friday);
   if (state.friday) launchConfetti();
   else clearConfetti();
-  pickMeme(state.pool);
-  scheduleMemeRefresh(state.pool);
+  pickContent(state);
+  scheduleMemeRefresh(state);
 }
 
 function tick() {
@@ -114,10 +126,12 @@ function tick() {
   applyState(computeState(now));
 }
 
-fetch("memes.json")
-  .then((res) => res.json())
-  .then((data) => {
-    memes = data;
-    tick();
-    setInterval(tick, 1000);
-  });
+Promise.all([
+  fetch("memes.json").then((res) => res.json()),
+  fetch("quotes.json").then((res) => res.json()),
+]).then(([memesData, quotesData]) => {
+  memes = memesData;
+  quotes = quotesData;
+  tick();
+  setInterval(tick, 1000);
+});
