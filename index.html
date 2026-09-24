@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cat Clock</title>
-  <link rel="icon" href="data:," />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet" />
@@ -13,20 +13,59 @@
 <body>
   <div id="confetti" aria-hidden="true"></div>
   <main>
-    <div id="cat"><img id="meme" alt="" /></div>
-    <h1 id="mood">—</h1>
-    <p id="countdown">-:--:--</p>
-    <p id="clock">--:--</p>
-    <p id="quote"></p>
-    <div id="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-      <div id="sun">☀️</div>
-      <div id="path"></div>
-      <div id="home-start">🏠</div>
-      <div id="home-end">🏠</div>
-      <div id="walker">🐱</div>
-    </div>
-    <p id="attribution"><a href="https://giphy.com" target="_blank" rel="noopener">Powered by GIPHY</a></p>
+    <section class="col col-mood">
+      <div id="cat" role="button" tabindex="0" aria-label="Show another cat meme"><img id="meme" alt="" /></div>
+      <p class="hint" aria-hidden="true">tap for a new meme</p>
+      <h1 id="mood">—</h1>
+      <p id="countdown">-:--:--</p>
+      <p id="clock">--:--</p>
+      <p id="quote"></p>
+    </section>
+    <section class="col col-office">
+      <div id="office" role="button" tabindex="0" aria-label="Cat office. Click to add another cat.">
+        <svg id="office-scene" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="320" height="180" fill="#f7ead6" />
+          <rect id="office-wall" y="0" width="320" height="86" fill="#cfe3dc" />
+          <rect y="84" width="320" height="4" fill="#2e2b3f" />
+          <rect id="office-window" x="128" y="14" width="64" height="40" rx="3" fill="#bfe3f2" stroke="#2e2b3f" stroke-width="2" />
+          <path d="M160 14 V54 M128 34 H192" stroke="#2e2b3f" stroke-width="2" />
+          <!-- coffee corner -->
+          <rect x="226" y="70" width="28" height="16" fill="#c98f5a" stroke="#2e2b3f" stroke-width="2" />
+          <rect x="232" y="44" width="16" height="26" rx="2" fill="#5b5670" stroke="#2e2b3f" stroke-width="2" />
+          <rect x="235" y="48" width="10" height="7" rx="1" fill="#9be3c4" />
+          <rect x="236" y="62" width="8" height="8" fill="#fdf6ec" stroke="#2e2b3f" stroke-width="1.5" />
+          <path class="steam" d="M238 60 q-2 -4 0 -7 M242 60 q2 -4 0 -7" fill="none" stroke="#2e2b3f" stroke-width="1.2" stroke-linecap="round" />
+          <!-- meeting room -->
+          <rect x="258" y="34" width="58" height="52" rx="3" fill="#bfe3f2" fill-opacity="0.55" stroke="#2e2b3f" stroke-width="2" />
+          <rect x="264" y="42" width="30" height="20" rx="1" fill="#fff" stroke="#2e2b3f" stroke-width="1.5" />
+          <path d="M268 48 h14 M268 53 h20 M268 58 h10" stroke="#e07a5f" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M304 34 V86" stroke="#2e2b3f" stroke-width="1.5" />
+          <text x="287" y="30" text-anchor="middle" font-size="7" font-weight="700" fill="#2e2b3f" font-family="sans-serif">MEETING</text>
+          <ellipse cx="262" cy="143" rx="8" ry="3" fill="#5b5670" />
+          <ellipse cx="308" cy="143" rx="8" ry="3" fill="#5b5670" />
+          <ellipse cx="285" cy="157" rx="8" ry="3" fill="#5b5670" />
+          <rect x="282" y="128" width="6" height="10" fill="#2e2b3f" />
+          <ellipse cx="285" cy="126" rx="27" ry="8" fill="#c98f5a" stroke="#2e2b3f" stroke-width="2" />
+          <rect x="14" y="62" width="14" height="22" rx="2" fill="#c98f5a" stroke="#2e2b3f" stroke-width="2" />
+          <path d="M21 62 Q10 46 16 38 M21 62 Q30 44 27 34 M21 62 V36" stroke="#81b29a" stroke-width="4" fill="none" stroke-linecap="round" />
+          <g id="office-desks"></g>
+          <g id="office-cats"></g>
+        </svg>
+      </div>
+      <p class="hint" aria-hidden="true">tap to hire a cat 🐾</p>
+      <div id="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="sun">☀️</div>
+        <div id="path"></div>
+        <div id="home-start">🏠</div>
+        <div id="home-end">🏠</div>
+        <div id="walker">🐱</div>
+        <span class="progress-label" id="label-start"></span>
+        <span class="progress-label" id="label-end"></span>
+      </div>
+    </section>
+    <p id="attribution">Cat Clock v2 · <a href="https://giphy.com" target="_blank" rel="noopener">Powered by GIPHY</a></p>
   </main>
   <script src="script.js"></script>
+  <script src="office.js"></script>
 </body>
 </html>

@@ -2,7 +2,10 @@
   --bg: #fdf6ec;
   --text: #4a3b32;
   --ink: #2e2b3f;
+  --line: var(--ink);
+  --card: #fff;
   --accent: #81b29a;
+  --inset: 14px;
   color-scheme: light;
 }
 
@@ -11,7 +14,7 @@
 }
 
 html, body {
-  height: 100%;
+  min-height: 100%;
   margin: 0;
 }
 
@@ -23,22 +26,46 @@ body {
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+}
+
+body.friday-night {
+  background: var(--ink);
+  color: var(--bg);
+  --line: var(--bg);
+  --card: #3d405b;
 }
 
 main {
   text-align: center;
   padding: 2rem;
+  margin: auto;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.col {
+  min-width: 0;
+}
+
+.col-office {
+  margin-top: 2rem;
+}
+
+.hint {
+  font-size: 0.8rem;
+  opacity: 0.55;
+  margin: 0.6rem 0 1rem;
 }
 
 #cat {
   width: min(70vw, 320px);
   height: min(70vw, 320px);
-  margin: 0 auto 1.5rem;
+  margin: 0 auto;
   border-radius: 1rem;
   overflow: hidden;
   background: #fff;
-  border: 4px solid var(--ink);
+  border: 4px solid var(--line);
   box-shadow: 6px 6px 0 var(--accent);
   cursor: pointer;
   transition: box-shadow 0.3s, transform 0.15s, border-color 0.3s;
@@ -47,6 +74,12 @@ main {
 #cat:active {
   box-shadow: 2px 2px 0 var(--accent);
   transform: translate(4px, 4px);
+}
+
+#cat:focus-visible,
+#office:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
 }
 
 #cat img {
@@ -76,8 +109,13 @@ h1 {
   font-size: 1.9rem;
   font-weight: 700;
   margin: 0 0 0.5rem;
-  color: var(--accent);
-  transition: color 0.3s;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 0.18em;
+  text-underline-offset: 0.18em;
+  text-decoration-skip-ink: none;
+  transition: text-decoration-color 0.3s;
 }
 
 #countdown {
@@ -88,6 +126,10 @@ h1 {
   font-variant-numeric: tabular-nums;
 }
 
+#countdown.off {
+  font-size: 1.5rem;
+}
+
 #clock {
   font-size: 1.1rem;
   opacity: 0.6;
@@ -96,36 +138,58 @@ h1 {
 }
 
 #quote {
+  position: relative;
   font-size: 0.95rem;
   font-style: italic;
-  margin: 1rem auto 0;
+  margin: 1.5rem auto 0;
   max-width: 26ch;
-  padding: 0.5rem 1rem;
-  background: #fff;
-  color: var(--text);
-  border: 3px solid var(--ink);
-  border-radius: 999px;
+  padding: 0.6rem 1rem;
+  background: var(--card);
+  color: inherit;
+  border: 3px solid var(--line);
+  border-radius: 1.25rem;
   box-shadow: 4px 4px 0 var(--accent);
   transition: box-shadow 0.3s;
 }
 
-body.friday-night #quote {
-  background: #3d405b;
-  color: #fdf6ec;
+/* speech-bubble tail pointing up at the cat */
+#quote::before,
+#quote::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border-style: solid;
+  border-color: transparent;
+}
+
+#quote::before {
+  bottom: 100%;
+  border-width: 0 11px 12px;
+  border-bottom-color: var(--line);
+}
+
+#quote::after {
+  bottom: calc(100% - 3px);
+  border-width: 0 7px 8px;
+  border-bottom-color: var(--card);
 }
 
 #progress {
+  --track: 26px;
+  --sun-min: 20px;
+  --arc: 18px;
   position: relative;
   width: min(70vw, 320px);
-  height: 56px;
-  margin: 1.25rem auto 0;
+  height: 76px;
+  margin: 0.5rem auto 0;
 }
 
 #path {
   position: absolute;
-  left: 14px;
-  right: 14px;
-  bottom: 14px;
+  left: var(--inset);
+  right: var(--inset);
+  bottom: var(--track);
   border-top: 3px dotted var(--accent);
   transition: border-color 0.3s;
 }
@@ -135,31 +199,50 @@ body.friday-night #quote {
 #home-end,
 #walker {
   position: absolute;
-  bottom: 14px;
+  bottom: var(--track);
   font-size: 1.15rem;
   line-height: 1;
   transform: translate(-50%, 50%);
 }
 
 #sun {
-  left: 50%;
-  bottom: 40px;
+  left: calc(var(--inset) + (100% - 2 * var(--inset)) * var(--sun-pos, 50) / 100);
+  bottom: calc(var(--track) + var(--sun-min) + var(--arc) * var(--sun-lift, 1));
+  transition: left 1s linear, bottom 1s linear;
   animation: sun-glow 3s ease-in-out infinite;
 }
 
 #home-start {
-  left: 14px;
+  left: var(--inset);
 }
 
 #home-end {
-  left: calc(100% - 14px);
+  left: calc(100% - var(--inset));
 }
 
 #walker {
-  left: calc(14px + (100% - 28px) * var(--percent, 0) / 100);
+  left: calc(var(--inset) + (100% - 2 * var(--inset)) * var(--percent, 0) / 100);
   transition: left 1s linear;
   will-change: left;
   animation: walker-bob 1.4s ease-in-out infinite;
+}
+
+.progress-label {
+  position: absolute;
+  bottom: 0;
+  font-size: 0.7rem;
+  opacity: 0.6;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  font-variant-numeric: tabular-nums;
+}
+
+#label-start {
+  left: var(--inset);
+}
+
+#label-end {
+  left: calc(100% - var(--inset));
 }
 
 @keyframes sun-glow {
@@ -172,6 +255,54 @@ body.friday-night #quote {
   50% { transform: translate(-50%, 50%) rotate(-8deg); }
 }
 
+#office {
+  width: min(70vw, 320px);
+  aspect-ratio: 320 / 180;
+  margin: 0 auto;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 4px solid var(--line);
+  box-shadow: 6px 6px 0 var(--accent);
+  cursor: pointer;
+  transition: box-shadow 0.3s, border-color 0.3s;
+}
+
+#office svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#office-window,
+#office-wall {
+  transition: fill 1s;
+}
+
+body[data-clock="off"] #office-window {
+  fill: #3d405b;
+}
+
+body[data-clock="off"] #office-wall {
+  fill: #b7c8c2;
+}
+
+.steam {
+  animation: steam 2s ease-in-out infinite;
+}
+
+@keyframes steam {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .steam,
+  #sun,
+  #walker {
+    animation: none;
+  }
+}
+
 #attribution {
   font-size: 0.75rem;
   opacity: 0.5;
@@ -180,11 +311,6 @@ body.friday-night #quote {
 
 #attribution a {
   color: inherit;
-}
-
-body.friday-night {
-  background: #2e2b3f;
-  color: #fdf6ec;
 }
 
 #confetti {
@@ -209,5 +335,95 @@ body.friday-night {
 @keyframes confetti-fall {
   to {
     transform: translateY(110vh) rotate(360deg);
+  }
+}
+
+@media (min-width: 800px) {
+  :root {
+    --inset: 22px;
+    /* vertical space taken by the timer and quote under the meme */
+    --below-meme: 19rem;
+    /* shared height of the meme and office cards; the 9fr / 16fr columns
+       give the square meme and the 16:9 office the same height */
+    --card-h: min(calc((100cqw - 3rem) * 9 / 25), calc(100dvh - 4rem - var(--below-meme)));
+  }
+
+  main {
+    max-width: 1400px;
+    min-height: 100dvh;
+    display: grid;
+    grid-template-columns: 9fr 16fr;
+    container-type: inline-size;
+    align-items: start;
+    align-content: center;
+    gap: 3rem;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .col-office {
+    margin-top: 0;
+  }
+
+  #cat {
+    width: var(--card-h);
+    height: var(--card-h);
+  }
+
+  #office {
+    width: calc(var(--card-h) * 16 / 9);
+    height: var(--card-h);
+  }
+
+  #progress {
+    --track: 44px;
+    --sun-min: 38px;
+    --arc: 40px;
+    width: 100%;
+    height: 150px;
+    margin: 0;
+  }
+
+  #sun,
+  #home-start,
+  #home-end,
+  #walker {
+    font-size: 2.2rem;
+  }
+
+  .progress-label {
+    font-size: 0.95rem;
+  }
+
+  #mood {
+    font-size: 2.4rem;
+  }
+
+  #countdown {
+    font-size: 3.6rem;
+  }
+
+  #countdown.off {
+    font-size: 2.4rem;
+  }
+
+  #clock {
+    font-size: 1.3rem;
+  }
+
+  #quote {
+    font-size: 1.1rem;
+    max-width: 32ch;
+  }
+
+  #attribution {
+    position: fixed;
+    right: 1rem;
+    bottom: 0.5rem;
+    margin: 0;
   }
 }

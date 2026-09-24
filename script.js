@@ -1,6 +1,7 @@
 const WORK_START_HOUR = 9;
 const WORK_END_HOUR = 18;
 const REFRESH_CAP_MS = 15 * 60 * 1000;
+const TITLE = "Cat Clock";
 
 const catEl = document.getElementById("cat");
 const memeImg = document.getElementById("meme");
@@ -10,7 +11,7 @@ const clockEl = document.getElementById("clock");
 const confettiEl = document.getElementById("confetti");
 const quoteEl = document.getElementById("quote");
 const progressEl = document.getElementById("progress");
-const walkerEl = document.getElementById("walker");
+const sunEl = document.getElementById("sun");
 
 const CONFETTI_COLORS = ["#f4a259", "#e07a5f", "#81b29a", "#f2cc8f", "#3d405b"];
 
@@ -22,6 +23,7 @@ const ACCENT_COLORS = {
   "stage-4": "#3d405b",
   offclock: "#81b29a",
   "offclock-friday": "#f2cc8f",
+  weekend: "#e07a5f",
 };
 
 let memes = null;
@@ -38,10 +40,20 @@ function workBounds(now) {
   return { start, end };
 }
 
-function nextWorkEnd(now) {
-  const { end } = workBounds(now);
-  if (now >= end) end.setDate(end.getDate() + 1);
-  return end;
+function isWorkday(date) {
+  const day = date.getDay();
+  return day >= 1 && day <= 5;
+}
+
+function nextWorkStart(now) {
+  const { start } = workBounds(now);
+  if (now >= start) start.setDate(start.getDate() + 1);
+  while (!isWorkday(start)) start.setDate(start.getDate() + 1);
+  return start;
+}
+
+function formatHour(date) {
+  return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
 
 function formatCountdown(ms) {
@@ -52,7 +64,17 @@ function formatCountdown(ms) {
   return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-function dayProgress(now) {
+function offClockMessage(now) {
+  const next = nextWorkStart(now);
+  if (next.toDateString() === now.toDateString()) return `See you at ${formatHour(next)}`;
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  if (next.toDateString() === tomorrow.toDateString()) return "See you tomorrow";
+  return `See you ${next.toLocaleDateString([], { weekday: "long" })}`;
+}
+
+function dayProgress(now, state) {
+  if (state.weekend) return 0;
   const { start, end } = workBounds(now);
   const ratio = (now - start) / (end - start);
   return Math.min(100, Math.max(0, ratio * 100));
@@ -61,24 +83,30 @@ function dayProgress(now) {
 function computeState(now) {
   const { start, end } = workBounds(now);
   const stageCount = memes.stageLabels.length;
+  const workday = isWorkday(now);
 
-  if (now >= start && now < end) {
+  if (workday && now >= start && now < end) {
     const progress = (now - start) / (end - start);
     const stage = Math.min(stageCount - 1, Math.floor(progress * stageCount));
     return {
       key: `stage-${stage}`,
       label: memes.stageLabels[stage],
       pool: memes.images.filter((img) => img.stage === stage),
+      working: true,
       friday: false,
+      weekend: false,
     };
   }
 
   const friday = now.getDay() === 5 && now.getHours() >= WORK_END_HOUR;
+  const weekend = !workday;
   return {
-    key: friday ? "offclock-friday" : "offclock",
-    label: friday ? "TGIF" : "Off the Clock",
+    key: friday ? "offclock-friday" : weekend ? "weekend" : "offclock",
+    label: friday ? "TGIF" : weekend ? "Weekend" : "Off the Clock",
     pool: memes.images.filter((img) => img.offClock),
+    working: false,
     friday,
+    weekend,
   };
 }
 
@@ -92,7 +120,7 @@ function pickMeme(pool) {
 }
 
 function pickQuote(key) {
-  const pool = quotes[key];
+  const pool = quotes[key] || quotes.offclock;
   quoteEl.textContent = pool[Math.floor(Math.random() * pool.length)];
 }
 
@@ -133,6 +161,9 @@ function applyState(state) {
   currentKey = state.key;
   moodEl.textContent = state.label;
   document.body.classList.toggle("friday-night", state.friday);
+  document.body.dataset.clock = state.working ? "on" : "off";
+  countdownEl.classList.toggle("off", !state.working);
+  sunEl.textContent = state.working ? "☀️" : "\u{1F319}";
   document.documentElement.style.setProperty("--accent", ACCENT_COLORS[state.key]);
   if (state.friday) launchConfetti();
   else clearConfetti();
@@ -140,26 +171,48 @@ function applyState(state) {
   scheduleMemeRefresh(state);
 }
 
-catEl.addEventListener("click", () => {
+function nextMeme() {
   if (!currentState) return;
   pickContent(currentState);
   scheduleMemeRefresh(currentState);
+}
+
+catEl.addEventListener("click", nextMeme);
+catEl.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  event.preventDefault();
+  nextMeme();
 });
 
 function tick() {
   const now = new Date();
-  countdownEl.textContent = formatCountdown(nextWorkEnd(now) - now);
+  const state = computeState(now);
+  applyState(state);
+
+  if (state.working) {
+    const remaining = formatCountdown(workBounds(now).end - now);
+    countdownEl.textContent = remaining;
+    document.title = `${remaining} · ${TITLE}`;
+  } else {
+    countdownEl.textContent = offClockMessage(now);
+    document.title = `${state.label} · ${TITLE}`;
+  }
   clockEl.textContent = now.toLocaleTimeString([], {
-    hour: "2-digit",
+    hour: "numeric",
     minute: "2-digit",
     timeZoneName: "short",
   });
-  applyState(computeState(now));
 
-  const percent = dayProgress(now);
+  const percent = dayProgress(now, state);
   progressEl.setAttribute("aria-valuenow", Math.round(percent));
   progressEl.style.setProperty("--percent", percent);
+  progressEl.style.setProperty("--sun-pos", state.working ? percent : 50);
+  progressEl.style.setProperty("--sun-lift", state.working ? Math.sin((Math.PI * percent) / 100) : 1);
 }
+
+const { start: dayStart, end: dayEnd } = workBounds(new Date());
+document.getElementById("label-start").textContent = formatHour(dayStart);
+document.getElementById("label-end").textContent = formatHour(dayEnd);
 
 Promise.all([
   fetch("memes.json").then((res) => res.json()),
