@@ -71,6 +71,14 @@ main {
   transition: box-shadow 0.3s, transform 0.15s, border-color 0.3s;
 }
 
+/* both cards are rapid-click targets; stop clicks selecting their text */
+#cat,
+#office {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
 #cat:active {
   box-shadow: 2px 2px 0 var(--accent);
   transform: translate(4px, 4px);
