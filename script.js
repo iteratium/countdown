@@ -2,18 +2,19 @@ const WORK_START_HOUR = 9;
 const WORK_END_HOUR = 18;
 const LUNCH_START_HOUR = 12;
 const LUNCH_END_HOUR = 13;
-const REFRESH_CAP_MS = 15 * 60 * 1000;
+const QUOTE_REFRESH_MS = 5 * 60 * 1000;
+const STAGE_LABELS = ["Dreading It", "Grumpy", "Hanging In There", "Winding Down", "Almost Free"];
 const TITLE = "Cat Clock";
 
-const catEl = document.getElementById("cat");
-const memeImg = document.getElementById("meme");
 const moodEl = document.getElementById("mood");
 const countdownEl = document.getElementById("countdown");
+const untilEl = document.getElementById("until");
 const clockEl = document.getElementById("clock");
 const confettiEl = document.getElementById("confetti");
 const quoteEl = document.getElementById("quote");
 const progressEl = document.getElementById("progress");
-const sunEl = document.getElementById("sun");
+const barPctEl = document.getElementById("bar-pct");
+const barCaptionEl = document.getElementById("bar-caption");
 
 const CONFETTI_COLORS = ["#f4a259", "#e07a5f", "#81b29a", "#f2cc8f", "#3d405b"];
 
@@ -21,18 +22,17 @@ const ACCENT_COLORS = {
   "stage-0": "#f4a259",
   "stage-1": "#e07a5f",
   "stage-2": "#81b29a",
-  "stage-3": "#f2cc8f",
-  "stage-4": "#3d405b",
+  "stage-3": "#d99a2b",
+  "stage-4": "#8e7dbe",
   offclock: "#81b29a",
   "offclock-friday": "#f2cc8f",
   weekend: "#e07a5f",
 };
 
-let memes = null;
 let quotes = null;
 let currentKey = null;
 let currentState = null;
-let memeTimer = null;
+let quoteTimer = null;
 
 function workBounds(now) {
   const start = new Date(now);
@@ -66,13 +66,29 @@ function formatCountdown(ms) {
   return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-function offClockMessage(now) {
-  const next = nextWorkStart(now);
-  if (next.toDateString() === now.toDateString()) return `See you at ${formatHour(next)}`;
+// Fredoka's digits are proportional, so wrap each one in a fixed-width slot
+function countdownMarkup(text) {
+  return text.replace(/\d/g, '<span class="digit">$&</span>');
+}
+
+function remainingText(ms) {
+  const totalMinutes = Math.ceil(ms / 60000);
+  const h = Math.floor(totalMinutes / 60);
+  const m = totalMinutes % 60;
+  const parts = [];
+  if (h) parts.push(`${h} hour${h === 1 ? "" : "s"}`);
+  if (m || !h) parts.push(`${m} minute${m === 1 ? "" : "s"}`);
+  return `${parts.join(" ")} left`;
+}
+
+// "See you at 9:00 AM" / "See you tomorrow at 9:00 AM" / "See you Monday at 9:00 AM"
+function offClockMessage(now, next) {
+  const at = `at ${formatHour(next)}`;
+  if (next.toDateString() === now.toDateString()) return `See you ${at}`;
   const tomorrow = new Date(now);
   tomorrow.setDate(tomorrow.getDate() + 1);
-  if (next.toDateString() === tomorrow.toDateString()) return "See you tomorrow";
-  return `See you ${next.toLocaleDateString([], { weekday: "long" })}`;
+  if (next.toDateString() === tomorrow.toDateString()) return `See you tomorrow ${at}`;
+  return `See you ${next.toLocaleDateString([], { weekday: "long" })} ${at}`;
 }
 
 function dayProgress(now, state) {
@@ -84,7 +100,7 @@ function dayProgress(now, state) {
 
 function computeState(now) {
   const { start, end } = workBounds(now);
-  const stageCount = memes.stageLabels.length;
+  const stageCount = STAGE_LABELS.length;
   const workday = isWorkday(now);
 
   if (workday && now >= start && now < end) {
@@ -92,8 +108,7 @@ function computeState(now) {
     const stage = Math.min(stageCount - 1, Math.floor(progress * stageCount));
     return {
       key: `stage-${stage}`,
-      label: memes.stageLabels[stage],
-      pool: memes.images.filter((img) => img.stage === stage),
+      label: STAGE_LABELS[stage],
       working: true,
       friday: false,
       weekend: false,
@@ -105,20 +120,10 @@ function computeState(now) {
   return {
     key: friday ? "offclock-friday" : weekend ? "weekend" : "offclock",
     label: friday ? "TGIF" : weekend ? "Weekend" : "Off the Clock",
-    pool: memes.images.filter((img) => img.offClock),
     working: false,
     friday,
     weekend,
   };
-}
-
-function pickMeme(pool) {
-  const choice = pool[Math.floor(Math.random() * pool.length)];
-  memeImg.src = `images/${choice.file}`;
-  memeImg.alt = choice.alt;
-  memeImg.classList.remove("pop");
-  void memeImg.offsetWidth;
-  memeImg.classList.add("pop");
 }
 
 function pickQuote(key) {
@@ -126,18 +131,12 @@ function pickQuote(key) {
   quoteEl.textContent = pool[Math.floor(Math.random() * pool.length)];
 }
 
-function pickContent(state) {
-  pickMeme(state.pool);
-  pickQuote(state.key);
-}
-
-function scheduleMemeRefresh(state) {
-  clearTimeout(memeTimer);
-  const interval = REFRESH_CAP_MS / state.pool.length;
-  memeTimer = setTimeout(() => {
-    pickContent(state);
-    scheduleMemeRefresh(state);
-  }, interval);
+function scheduleQuoteRefresh(state) {
+  clearTimeout(quoteTimer);
+  quoteTimer = setTimeout(() => {
+    pickQuote(state.key);
+    scheduleQuoteRefresh(state);
+  }, QUOTE_REFRESH_MS);
 }
 
 function launchConfetti() {
@@ -165,46 +164,53 @@ function applyState(state) {
   document.body.classList.toggle("friday-night", state.friday);
   document.body.dataset.clock = state.working ? "on" : "off";
   document.body.dataset.mood = state.key;
-  countdownEl.classList.toggle("off", !state.working);
-  sunEl.textContent = state.working ? "☀️" : "\u{1F319}";
   document.documentElement.style.setProperty("--accent", ACCENT_COLORS[state.key]);
   if (state.friday) launchConfetti();
   else clearConfetti();
-  pickContent(state);
-  scheduleMemeRefresh(state);
+  pickQuote(state.key);
+  scheduleQuoteRefresh(state);
 }
 
-function nextMeme() {
-  if (!currentState) return;
-  pickContent(currentState);
-  scheduleMemeRefresh(currentState);
-}
+// the caption under the loading bar, in the spirit of "cat loading… please wait"
+const BAR_CAPTIONS = {
+  "stage-0": "Motivation loading… please wait",
+  "stage-1": "Coffee loading… please wait",
+  "stage-2": "Freedom loading… please wait",
+  "stage-3": "Freedom loading… nearly there",
+  "stage-4": "Freedom loading… almost done!",
+};
 
-catEl.addEventListener("click", nextMeme);
-catEl.addEventListener("keydown", (event) => {
-  if (event.key !== "Enter" && event.key !== " ") return;
-  event.preventDefault();
-  nextMeme();
-});
+function barCaption(state, now, lunch) {
+  if (lunch) return "Lunch break: refuelling… 🍚";
+  if (state.working) return BAR_CAPTIONS[state.key];
+  if (state.weekend) return "Weekend mode: 100% ✓";
+  if (state.friday) return "TGIF: 100% ✓";
+  if (now.getHours() < WORK_START_HOUR) return `Workday starts loading at ${formatHour(workBounds(now).start)}`;
+  return "Freedom: 100% ✓";
+}
 
 function tick() {
   const now = new Date();
   const state = computeState(now);
   applyState(state);
 
+  // on the clock count down to 6 PM; off the clock count down to the next 9 AM
   if (state.working) {
-    const remaining = formatCountdown(workBounds(now).end - now);
-    countdownEl.textContent = remaining;
+    const end = workBounds(now).end;
+    const remaining = formatCountdown(end - now);
+    countdownEl.innerHTML = countdownMarkup(remaining);
+    untilEl.textContent = `left until ${formatHour(end)}`;
+    progressEl.setAttribute("aria-valuetext", remainingText(end - now));
     document.title = `${remaining} · ${TITLE}`;
   } else {
-    countdownEl.textContent = offClockMessage(now);
+    const next = nextWorkStart(now);
+    const message = offClockMessage(now, next);
+    countdownEl.innerHTML = countdownMarkup(formatCountdown(next - now));
+    untilEl.textContent = message;
+    progressEl.setAttribute("aria-valuetext", `${state.label}. ${message}`);
     document.title = `${state.label} · ${TITLE}`;
   }
-  clockEl.textContent = now.toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  });
+  clockEl.textContent = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 
   const hour = now.getHours();
   const lunch = state.working && hour >= LUNCH_START_HOUR && hour < LUNCH_END_HOUR;
@@ -213,20 +219,32 @@ function tick() {
 
   const percent = dayProgress(now, state);
   progressEl.setAttribute("aria-valuenow", Math.round(percent));
-  progressEl.style.setProperty("--percent", percent);
-  progressEl.style.setProperty("--sun-pos", state.working ? percent : 50);
-  progressEl.style.setProperty("--sun-lift", state.working ? Math.sin((Math.PI * percent) / 100) : 1);
+  // the loading bar sits full after hours and at weekends, and empty before 9 AM
+  const barPercent = state.working ? percent : now.getHours() < WORK_START_HOUR && !state.weekend ? 0 : 100;
+  progressEl.style.setProperty("--bar-percent", barPercent);
+  barPctEl.textContent = state.working ? `${Math.floor(barPercent)}%` : barPercent === 100 ? "100% ✓" : "0%";
+  barCaptionEl.textContent = barCaption(state, now, lunch);
+  // at lunch the walker stops at the rice bowl; the paw trail keeps real time
+  const lunchMid = ((LUNCH_START_HOUR + LUNCH_END_HOUR) / 2 - WORK_START_HOUR) / (WORK_END_HOUR - WORK_START_HOUR) * 100;
+  progressEl.style.setProperty("--walker-pos", lunch ? lunchMid : barPercent);
 }
 
 const { start: dayStart, end: dayEnd } = workBounds(new Date());
 document.getElementById("label-start").textContent = formatHour(dayStart);
 document.getElementById("label-end").textContent = formatHour(dayEnd);
 
-Promise.all([
-  fetch("memes.json").then((res) => res.json()),
-  fetch("quotes.json").then((res) => res.json()),
-]).then(([memesData, quotesData]) => {
-  memes = memesData;
+const workHours = WORK_END_HOUR - WORK_START_HOUR;
+progressEl.style.setProperty("--lunch-start", ((LUNCH_START_HOUR - WORK_START_HOUR) / workHours) * 100);
+progressEl.style.setProperty("--lunch-end", ((LUNCH_END_HOUR - WORK_START_HOUR) / workHours) * 100);
+
+// "How it works" pop-up: open from the button under the office; Esc, ✕ or a click outside closes it
+const aboutEl = document.getElementById("about");
+document.getElementById("about-open").addEventListener("click", () => aboutEl.showModal());
+aboutEl.addEventListener("click", (event) => {
+  if (event.target === aboutEl) aboutEl.close();
+});
+
+fetch("quotes.json").then((res) => res.json()).then((quotesData) => {
   quotes = quotesData;
   tick();
   setInterval(tick, 1000);
