@@ -48,82 +48,184 @@ main {
   min-width: 0;
 }
 
-.col-office {
-  margin-top: 2rem;
+.col-time {
+  margin-top: 0.5rem;
 }
 
 .hint {
   font-size: 0.8rem;
-  opacity: 0.55;
+  opacity: 0.7;
+  margin: 0;
+}
+
+/* under the office: the hire-a-cat hint and the "How it works" button */
+.office-caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem 0.9rem;
   margin: 0.6rem 0 1rem;
 }
 
-#cat {
-  width: min(70vw, 320px);
-  height: min(70vw, 320px);
-  margin: 0 auto;
-  border-radius: 1rem;
-  overflow: hidden;
-  background: #fff;
-  border: 4px solid var(--line);
-  box-shadow: 6px 6px 0 var(--accent);
+.about-link {
+  font: inherit;
+  font-size: 0.8rem;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0.1rem 0.2rem;
   cursor: pointer;
-  transition: box-shadow 0.3s, transform 0.15s, border-color 0.3s;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
 }
 
-/* both cards are rapid-click targets; stop clicks selecting their text */
-#cat,
+.about-link:focus-visible,
+.about-close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* the "How it works" pop-up, styled like the quote card */
+#about {
+  width: min(42rem, calc(100vw - 2rem));
+  max-height: min(85dvh, 52rem);
+  padding: 0;
+  border: 4px solid var(--line);
+  border-radius: 1rem;
+  background: var(--card);
+  color: inherit;
+  box-shadow: 6px 6px 0 var(--accent);
+}
+
+#about::backdrop {
+  background: rgb(46 43 63 / 0.5);
+}
+
+.about-close-form {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: flex-end;
+  height: 0;
+}
+
+.about-close {
+  margin: 0.6rem 0.6rem 0 0;
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--line);
+  border-radius: 50%;
+  background: var(--card);
+  color: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.about-body {
+  padding: 1.4rem 1.6rem 1.6rem;
+  text-align: left;
+  line-height: 1.55;
+}
+
+.about-body h2,
+.about-body h3 {
+  font-family: "Fredoka", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 700;
+}
+
+.about-body h2 {
+  font-size: 1.5rem;
+  margin: 0 2.2rem 0.6rem 0;
+}
+
+.about-body h3 {
+  font-size: 1.12rem;
+  margin: 1.4rem 0 0.35rem;
+  padding-top: 1rem;
+  border-top: 2px dashed color-mix(in srgb, var(--line) 20%, transparent);
+}
+
+.about-body p,
+.about-body li {
+  font-size: 0.95rem;
+}
+
+.about-body p {
+  margin: 0.4rem 0;
+}
+
+.about-body ul,
+.about-body ol {
+  margin: 0.3rem 0 0.5rem;
+  padding-left: 1.3rem;
+}
+
+.about-body li {
+  margin: 0.2rem 0;
+}
+
+.about-body code {
+  font-size: 0.85em;
+  padding: 0 0.25em;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.about-body a {
+  color: inherit;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+.about-try {
+  list-style: none;
+  padding-left: 0;
+}
+
+.hint .mouse,
+.hint-full,
+.hint.full .hint-default {
+  display: none;
+}
+
+.hint.full .hint-full {
+  display: inline;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hint .mouse { display: inline; }
+  .hint .touch { display: none; }
+}
+
+/* the office is a rapid-click target; stop clicks selecting its text */
 #office {
   -webkit-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 
-#cat:active {
-  box-shadow: 2px 2px 0 var(--accent);
-  transform: translate(4px, 4px);
-}
-
-#cat:focus-visible,
 #office:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 4px;
-}
-
-#cat img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-#cat img.pop {
-  animation: cat-pop 0.25s ease;
-}
-
-@keyframes cat-pop {
-  from {
-    transform: scale(0.85);
-    opacity: 0.5;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
 }
 
 h1 {
   font-family: "Fredoka", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 1.9rem;
   font-weight: 700;
+  display: inline-block;
+  white-space: nowrap;
   margin: 0 0 0.5rem;
+  padding: 0 0.2em;
   color: inherit;
-  text-decoration: underline;
-  text-decoration-color: var(--accent);
-  text-decoration-thickness: 0.18em;
-  text-underline-offset: 0.18em;
-  text-decoration-skip-ink: none;
-  transition: text-decoration-color 0.3s;
+  /* highlighter stroke behind the lower half of the text */
+  background: linear-gradient(transparent 55%, color-mix(in srgb, var(--accent) 55%, transparent) 55%);
+  border-radius: 0.15em;
 }
 
 #countdown {
@@ -134,102 +236,239 @@ h1 {
   font-variant-numeric: tabular-nums;
 }
 
-#countdown.off {
-  font-size: 1.5rem;
+/* Fredoka has no tabular figures, so give every digit the same slot */
+#countdown .digit {
+  display: inline-block;
+  width: 0.58em;
+  text-align: center;
+}
+
+/* the countdown with its "left until 6:00 PM" / "See you tomorrow at 9:00 AM" beside it */
+.countdown-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0 0.6rem;
+}
+
+#until {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin: 0;
+}
+
+/* local clock, then the Tokyo weather once it has loaded */
+#clock-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+  margin: 0.3rem 0 0;
 }
 
 #clock {
-  font-size: 1.1rem;
-  opacity: 0.6;
-  margin: 0.25rem 0 0;
+  opacity: 0.65;
   font-variant-numeric: tabular-nums;
 }
 
+#weather {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+#weather[hidden] {
+  display: none;
+}
+
+#weather .sep,
+#weather-text {
+  opacity: 0.65;
+}
+
+#weather-icon {
+  width: 1.3em;
+  height: 1.3em;
+  overflow: visible;
+}
+
+/* weather icon: day/night and weather pick which parts show */
+.wi-sun,
+.wi-moon,
+.wi-cloud,
+.wi-rain,
+.wi-snow,
+.wi-bolt,
+.wi-fog {
+  display: none;
+}
+
+body:not([data-sky="night"])[data-weather="clear"] .wi-sun,
+body:not([data-sky="night"])[data-weather="partly"] .wi-sun,
+body[data-sky="night"][data-weather="clear"] .wi-moon,
+body[data-sky="night"][data-weather="partly"] .wi-moon,
+body[data-weather="partly"] .wi-cloud,
+body[data-weather="cloudy"] .wi-cloud,
+body[data-weather="rain"] .wi-cloud,
+body[data-weather="rain"] .wi-rain,
+body[data-weather="snow"] .wi-cloud,
+body[data-weather="snow"] .wi-snow,
+body[data-weather="storm"] .wi-cloud,
+body[data-weather="storm"] .wi-bolt,
+body[data-weather="fog"] .wi-cloud,
+body[data-weather="fog"] .wi-fog {
+  display: inline;
+}
+
+/* partly cloudy: a smaller sun or moon peeking out behind the cloud */
+body[data-weather="partly"] .wi-sun,
+body[data-weather="partly"] .wi-moon {
+  transform: translate(-3px, -3px) scale(0.75);
+}
+
+body[data-weather="partly"] .wi-cloud {
+  transform: translate(2px, 3px) scale(0.85);
+}
+
+/* rain, snow, storm and fog: the cloud sits higher to make room underneath */
+body[data-weather="rain"] .wi-cloud,
+body[data-weather="snow"] .wi-cloud,
+body[data-weather="storm"] .wi-cloud,
+body[data-weather="fog"] .wi-cloud {
+  transform: translateY(-4px);
+}
+
 #quote {
-  position: relative;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-style: italic;
+  line-height: 1.5;
   margin: 1.5rem auto 0;
-  max-width: 26ch;
-  padding: 0.6rem 1rem;
+  max-width: 30ch;
+  padding: 0.9rem 1.25rem;
   background: var(--card);
   color: inherit;
-  border: 3px solid var(--line);
-  border-radius: 1.25rem;
-  box-shadow: 4px 4px 0 var(--accent);
-  transition: box-shadow 0.3s;
-}
-
-/* speech-bubble tail pointing up at the cat */
-#quote::before,
-#quote::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  border-style: solid;
-  border-color: transparent;
-}
-
-#quote::before {
-  bottom: 100%;
-  border-width: 0 11px 12px;
-  border-bottom-color: var(--line);
-}
-
-#quote::after {
-  bottom: calc(100% - 3px);
-  border-width: 0 7px 8px;
-  border-bottom-color: var(--card);
+  border: 4px solid var(--line);
+  border-radius: 1rem;
+  box-shadow: 6px 6px 0 var(--accent);
+  transition: box-shadow 0.3s, border-color 0.3s;
 }
 
 #progress {
-  --track: 26px;
-  --sun-min: 20px;
-  --arc: 18px;
+  --track: 30px;
+  --bar-h: 14px;
+  --walker-h: 1.5rem;
+  --lunch-mid: calc(var(--inset) + (100% - 2 * var(--inset)) * (var(--lunch-start, 0) + var(--lunch-end, 0)) / 200);
   position: relative;
-  width: min(70vw, 320px);
-  height: 76px;
+  width: min(100%, 480px);
+  height: 66px;
   margin: 0.5rem auto 0;
 }
 
-#path {
+/* the day as a "loading" pill, filled in the mood's accent colour */
+#bar {
   position: absolute;
   left: var(--inset);
   right: var(--inset);
   bottom: var(--track);
-  border-top: 3px dotted var(--accent);
-  transition: border-color 0.3s;
+  height: var(--bar-h);
+  transform: translateY(50%);
+  border: 3px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  overflow: hidden;
+  box-sizing: content-box;
 }
 
-#sun,
-#home-start,
-#home-end,
-#walker {
+/* diagonal stripes drift along the fill like a loading bar */
+#bar-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--bar-percent, 0) * 1%);
+  background:
+    repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.28) 0 6px, transparent 6px 12px),
+    var(--accent);
+  background-size: 17px 17px, auto;
+  border-right: 3px solid var(--line);
+  transition: width 1s linear, background-color 0.3s;
+  animation: bar-stripes 1.4s linear infinite;
+}
+
+/* after hours and at weekends the bar sits full and green */
+body[data-clock="off"] #bar-fill {
+  background: #81b29a;
+  border-right: none;
+  animation: none;
+}
+
+@keyframes bar-stripes {
+  to { background-position: 17px 0, 0 0; }
+}
+
+#bar-lunch {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--lunch-start, 0) * 1%);
+  width: calc((var(--lunch-end, 0) - var(--lunch-start, 0)) * 1%);
+  background: repeating-linear-gradient(90deg, rgb(46 43 63 / 0.18) 0 2px, transparent 2px 5px);
+}
+
+#bar-pct {
+  position: absolute;
+  right: 0.6em;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: "Fredoka", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  line-height: 1;
+  color: var(--ink);
+}
+
+#bar-caption {
+  font-family: "Fredoka", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  opacity: 0.75;
+  margin: 0.15rem 0 0;
+}
+
+#lunch-bowl {
+  position: absolute;
+  bottom: 0;
+  left: var(--lunch-mid);
+  width: 1.1rem;
+  height: 1.1rem;
+  overflow: visible;
+  transform: translateX(-50%);
+}
+
+.bowl-steam {
+  display: none;
+}
+
+body[data-lunch="on"] .bowl-steam {
+  display: inline;
+}
+
+.track-icon {
   position: absolute;
   bottom: var(--track);
-  font-size: 1.15rem;
-  line-height: 1;
+  width: 1.4rem;
+  height: 1.4rem;
+  overflow: visible;
   transform: translate(-50%, 50%);
 }
 
-#sun {
-  left: calc(var(--inset) + (100% - 2 * var(--inset)) * var(--sun-pos, 50) / 100);
-  bottom: calc(var(--track) + var(--sun-min) + var(--arc) * var(--sun-lift, 1));
-  transition: left 1s linear, bottom 1s linear;
-  animation: sun-glow 3s ease-in-out infinite;
-}
-
-#home-start {
-  left: var(--inset);
-}
-
-#home-end {
-  left: calc(100% - var(--inset));
-}
-
+/* the cat rides on top of the bar at the edge of the fill */
 #walker {
-  left: calc(var(--inset) + (100% - 2 * var(--inset)) * var(--percent, 0) / 100);
+  width: var(--walker-h);
+  height: var(--walker-h);
+  bottom: calc(var(--track) + var(--bar-h) / 2 + 1px + var(--walker-h) / 2);
+  left: calc(var(--inset) + (100% - 2 * var(--inset)) * var(--walker-pos, 0) / 100);
   transition: left 1s linear;
   will-change: left;
   animation: walker-bob 1.4s ease-in-out infinite;
@@ -253,10 +492,6 @@ h1 {
   left: calc(100% - var(--inset));
 }
 
-@keyframes sun-glow {
-  0%, 100% { transform: translate(-50%, 50%) scale(1); }
-  50% { transform: translate(-50%, 50%) scale(1.12); }
-}
 
 @keyframes walker-bob {
   0%, 100% { transform: translate(-50%, 50%) rotate(0deg); }
@@ -264,8 +499,8 @@ h1 {
 }
 
 #office {
-  width: min(70vw, 320px);
-  aspect-ratio: 320 / 180;
+  width: min(100%, 720px);
+  aspect-ratio: 360 / 180;
   margin: 0 auto;
   border-radius: 1rem;
   overflow: hidden;
@@ -281,54 +516,348 @@ h1 {
   height: 100%;
 }
 
-#office-window,
+/* ---- Tokyo sky: sky.js sets data-sky (dawn/day/dusk/night) and data-weather ---- */
+body {
+  --daylight: 1;
+  --clarity: 1;
+  --starry: 1;
+}
+
+body[data-sky="night"] {
+  --daylight: 0;
+}
+
+body[data-weather="partly"] {
+  --starry: 0.6;
+}
+
+body[data-weather="cloudy"],
+body[data-weather="fog"],
+body[data-weather="rain"],
+body[data-weather="snow"],
+body[data-weather="storm"] {
+  --clarity: 0.25;
+  --starry: 0;
+}
+
 #office-wall,
 .city-far,
 .city-near,
-.bay {
-  transition: fill 1s;
+.bay,
+.clouds-more,
+.tower-body {
+  transition: fill 2s;
 }
 
+.sky-dawn,
+.sky-dusk,
+.sky-night,
+#sky-sun,
+#sky-moon,
+#sky-stars,
+#overcast,
 .cloud,
-.lit {
-  transition: opacity 1s;
+.cloud-mid,
+.cloud-heavy,
+.birds,
+.lit,
+.tower-glow,
+.beacons,
+#bridge-lights,
+.fog {
+  transition: opacity 2s;
 }
 
-.lit {
+.sky-dawn,
+.sky-dusk,
+.sky-night,
+#overcast,
+.cloud-mid,
+.cloud-heavy,
+.birds,
+.lit,
+.tower-glow,
+.beacons,
+#bridge-lights,
+.fog {
   opacity: 0;
 }
 
-/* skyline at night: navy sky, silhouetted city, lit windows */
-body[data-clock="off"] #office-window {
-  fill: #3d405b;
-}
-
-body[data-clock="off"] .city-far {
-  fill: #4f5475;
-}
-
-body[data-clock="off"] .city-near {
-  fill: #2e2b3f;
-}
-
-body[data-clock="off"] .bay {
-  fill: #34506a;
-}
-
-body[data-clock="off"] .cloud {
-  opacity: 0.2;
-}
-
-body[data-clock="off"] .lit {
+body[data-sky="dawn"] .sky-dawn,
+body[data-sky="dusk"] .sky-dusk,
+body[data-sky="night"] .sky-night {
   opacity: 1;
 }
 
-body[data-clock="off"] #office-wall {
-  fill: #b7c8c2;
+/* sun and moon fade behind bad weather */
+#sky-sun {
+  opacity: calc(var(--daylight) * var(--clarity));
+}
+
+#sky-moon {
+  opacity: calc((1 - var(--daylight)) * var(--clarity));
+}
+
+#sky-stars {
+  opacity: calc((1 - var(--daylight)) * var(--starry));
+}
+
+.sun-core { fill: #fff4c9; }
+.sun-halo { fill: #fff4c9; opacity: 0.35; }
+
+body[data-sky="dawn"] .sun-core,
+body[data-sky="dusk"] .sun-core {
+  fill: #f4a259;
+}
+
+body[data-sky="dawn"] .sun-halo,
+body[data-sky="dusk"] .sun-halo {
+  fill: #f6c177;
+  opacity: 0.5;
+}
+
+.star {
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+.shooting-star {
+  display: none;
+  opacity: 0;
+}
+
+body[data-sky="night"][data-weather="clear"] .shooting-star {
+  display: inline;
+  animation: shooting-star 13s linear infinite;
+}
+
+@keyframes shooting-star {
+  0%, 86% { opacity: 0; transform: translate(0, 0); }
+  88% { opacity: 1; }
+  93%, 100% { opacity: 0; transform: translate(-34px, 14px); }
+}
+
+/* weather: grey wash, more and darker clouds */
+body[data-weather="cloudy"] #overcast { opacity: 0.22; }
+body[data-weather="fog"] #overcast { opacity: 0.3; }
+body[data-weather="rain"] #overcast { opacity: 0.32; }
+body[data-weather="snow"] #overcast { opacity: 0.18; }
+body[data-weather="storm"] #overcast { opacity: 0.45; }
+
+body[data-sky="night"] .cloud {
+  opacity: 0.2;
+}
+
+body[data-weather="rain"] .cloud,
+body[data-weather="storm"] .cloud {
+  opacity: 0;
+}
+
+body:not([data-weather="clear"]) .cloud-mid,
+body[data-weather="cloudy"] .cloud-heavy,
+body[data-weather="rain"] .cloud-heavy,
+body[data-weather="snow"] .cloud-heavy,
+body[data-weather="storm"] .cloud-heavy {
+  opacity: 1;
+}
+
+.clouds-more { fill: #eef1f4; }
+body[data-sky="dawn"] .clouds-more,
+body[data-sky="dusk"] .clouds-more { fill: #f3d6cf; }
+body[data-weather="rain"] .clouds-more,
+body[data-weather="storm"] .clouds-more { fill: #a3abbb; }
+body[data-sky="night"] .clouds-more { fill: #5d6485; }
+body[data-sky="night"][data-weather="rain"] .clouds-more,
+body[data-sky="night"][data-weather="storm"] .clouds-more { fill: #474c68; }
+
+.cloud { animation: cloud-drift 50s ease-in-out infinite alternate; }
+.cloud-mid { animation: cloud-drift 70s ease-in-out infinite alternate-reverse; }
+.cloud-heavy { animation: cloud-drift 90s ease-in-out infinite alternate; }
+
+@keyframes cloud-drift {
+  from { transform: translateX(-10px); }
+  to { transform: translateX(10px); }
+}
+
+body[data-sky="day"][data-weather="clear"] .birds,
+body[data-sky="day"][data-weather="partly"] .birds,
+body[data-sky="dawn"][data-weather="clear"] .birds {
+  opacity: 1;
+}
+
+.birds {
+  animation: birds-fly 30s linear infinite;
+}
+
+@keyframes birds-fly {
+  from { transform: translateX(-140px); }
+  to { transform: translateX(90px); }
+}
+
+/* city colours through the day */
+body[data-sky="dawn"] .city-far { fill: #c4b8cc; }
+body[data-sky="dawn"] .city-near { fill: #a89cb4; }
+body[data-sky="dawn"] .bay { fill: #e5c3b8; }
+body[data-sky="dusk"] .city-far { fill: #8e7fa3; }
+body[data-sky="dusk"] .city-near { fill: #6b5f86; }
+body[data-sky="dusk"] .bay { fill: #c98f8f; }
+body[data-sky="dusk"] #office-wall { fill: #d6d6cc; }
+body[data-sky="night"] .city-far { fill: #4f5475; }
+body[data-sky="night"] .city-near { fill: #2e2b3f; }
+body[data-sky="night"] .bay { fill: #34506a; }
+body[data-sky="night"] #office-wall { fill: #b7c8c2; }
+
+/* lights come on at dusk: windows, tower floodlights, beacons, the Rainbow Bridge */
+body[data-sky="dusk"] .lit { opacity: 0.7; }
+body[data-sky="night"] .lit { opacity: 1; }
+body[data-sky="dusk"] .tower-glow { opacity: 0.35; }
+body[data-sky="night"] .tower-glow { opacity: 0.75; }
+body[data-sky="night"] .tower-body { fill: #ff9f5a; }
+
+body[data-sky="dusk"] .beacons,
+body[data-sky="night"] .beacons {
+  opacity: 1;
+}
+
+.beacons circle {
+  animation: beacon 1.6s steps(1) infinite;
+}
+
+@keyframes beacon {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+
+body[data-sky="dusk"] #bridge-lights { opacity: 0.8; }
+body[data-sky="night"] #bridge-lights { opacity: 1; }
+
+.bridge-light {
+  animation: twinkle 1.5s ease-in-out infinite;
+}
+
+/* fog drifts across the city */
+body[data-weather="fog"] .fog {
+  opacity: 1;
+}
+
+.fog-band {
+  fill: #fdf6ec;
+  opacity: 0.55;
+  animation: cloud-drift 18s ease-in-out infinite alternate;
+}
+
+body[data-sky="night"] .fog-band {
+  fill: #8a8fa8;
+}
+
+/* rain and snow fall in a loop; each layer is drawn twice, one window-height apart */
+#sky-rain,
+#sky-snow,
+#glass-drops {
+  display: none;
+}
+
+body[data-weather="rain"] #sky-rain,
+body[data-weather="storm"] #sky-rain,
+body[data-weather="rain"] #glass-drops,
+body[data-weather="storm"] #glass-drops,
+body[data-weather="snow"] #sky-snow {
+  display: inline;
+}
+
+.rain-fall {
+  stroke: #6a82a0;
+  opacity: 0.7;
+  animation: fall 0.6s linear infinite;
+}
+
+body[data-sky="night"] .rain-fall {
+  stroke: #c9d6e8;
+}
+
+.snow-fall {
+  animation: fall 9s linear infinite;
+}
+
+.snow-sway {
+  animation: sway 3s ease-in-out infinite alternate;
+}
+
+@keyframes fall {
+  to { transform: translateY(76px); }
+}
+
+@keyframes sway {
+  from { transform: translateX(-3px); }
+  to { transform: translateX(3px); }
+}
+
+.glass-drop {
+  opacity: 0;
+  animation: drip 5s ease-in infinite;
+}
+
+@keyframes drip {
+  0% { opacity: 0; transform: translateY(0); }
+  15% { opacity: 0.75; }
+  80% { opacity: 0.6; }
+  100% { opacity: 0; transform: translateY(6px); }
+}
+
+/* thunderstorm: an occasional soft flash and bolt */
+.flash,
+.bolt {
+  opacity: 0;
+}
+
+body[data-weather="storm"] .flash {
+  animation: flash 8s linear infinite;
+}
+
+body[data-weather="storm"] .bolt {
+  animation: bolt 8s linear infinite;
+}
+
+@keyframes flash {
+  0%, 90%, 93%, 95%, 100% { opacity: 0; }
+  91% { opacity: 0.45; }
+  94% { opacity: 0.3; }
+}
+
+@keyframes bolt {
+  0%, 90%, 96%, 100% { opacity: 0; }
+  91%, 95% { opacity: 1; }
 }
 
 .steam {
   animation: steam 2s ease-in-out infinite;
+}
+
+/* office lights: the guard robot fades the room dark at night once everyone has gone */
+.lights-off {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.5s;
+}
+
+.lights-off.on {
+  opacity: 0.55;
+}
+
+/* the office plant sways a little from the top of its pot */
+.plant-leaves {
+  transform-box: view-box;
+  transform-origin: 21px 64px;
+  animation: plant-sway 5s ease-in-out infinite alternate;
+}
+
+@keyframes plant-sway {
+  from { transform: rotate(-2.5deg); }
+  to { transform: rotate(2.5deg); }
 }
 
 @keyframes steam {
@@ -347,12 +876,56 @@ body[data-clock="off"] #office-wall {
   100% { opacity: 0; transform: translateY(-3px); }
 }
 
+/* the sleepy cat's nose bubble swells and shrinks from the nose */
+.snot-bubble {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: snot-bubble 2.6s ease-in-out infinite;
+}
+
+@keyframes snot-bubble {
+  0%, 100% { transform: scale(0.6); }
+  50% { transform: scale(1.1); }
+}
+
+/* the dizzy cat's orbit rings: dashes crawl round so the rings look like they spin */
+.dizzy-ring {
+  stroke-dasharray: 2.5 1.8;
+  animation: dizzy-ring 1.2s linear infinite;
+}
+
+@keyframes dizzy-ring {
+  to { stroke-dashoffset: -8.6; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .plant-leaves,
+  .dizzy-ring,
+  .snot-bubble,
   .steam,
   .rice-steam,
-  #sun,
-  #walker {
+  #walker,
+  #bar-fill,
+  .star,
+  .cloud,
+  .cloud-mid,
+  .cloud-heavy,
+  .birds,
+  .beacons circle,
+  .bridge-light,
+  .fog-band,
+  .rain-fall,
+  .snow-fall,
+  .snow-sway,
+  .glass-drop,
+  body[data-weather="storm"] .flash,
+  body[data-weather="storm"] .bolt,
+  body[data-sky="night"][data-weather="clear"] .shooting-star {
     animation: none;
+  }
+
+  .glass-drop {
+    opacity: 0.6;
   }
 }
 
@@ -394,22 +967,20 @@ body[data-clock="off"] #office-wall {
 @media (min-width: 800px) {
   :root {
     --inset: 22px;
-    /* vertical space taken by the timer and quote under the meme */
-    --below-meme: 19rem;
-    /* shared height of the meme and office cards; the 9fr / 16fr columns
-       give the square meme and the 16:9 office the same height */
-    --card-h: min(calc((100cqw - 3rem) * 9 / 25), calc(100dvh - 4rem - var(--below-meme)));
+    /* height reserved under the office for the hint, the time block and the footer */
+    --below-office: 21.5rem;
+    --office-h: min(calc(100cqw / 2), calc(100dvh - 4rem - var(--below-office)));
   }
 
   main {
-    max-width: 1400px;
+    max-width: 1500px;
     min-height: 100dvh;
     display: grid;
-    grid-template-columns: 9fr 16fr;
+    grid-template-columns: minmax(0, 1fr);
     container-type: inline-size;
-    align-items: start;
     align-content: center;
-    gap: 3rem;
+    align-items: center;
+    gap: 1rem;
   }
 
   .col {
@@ -418,34 +989,51 @@ body[data-clock="off"] #office-wall {
     align-items: center;
   }
 
-  .col-office {
+  /* the row under the office is exactly as wide as the office */
+  .dashboard {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 3rem;
+    width: calc(var(--office-h) * 2);
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  /* the time block reads top to bottom: mood, countdown, clock + weather, then the track */
+  .col-time {
+    align-items: flex-start;
+    text-align: left;
     margin-top: 0;
   }
 
-  #cat {
-    width: var(--card-h);
-    height: var(--card-h);
+  .countdown-row,
+  #clock-line {
+    justify-content: flex-start;
   }
 
   #office {
-    width: calc(var(--card-h) * 16 / 9);
-    height: var(--card-h);
+    width: calc(var(--office-h) * 2);
+    height: var(--office-h);
   }
 
   #progress {
-    --track: 44px;
-    --sun-min: 38px;
-    --arc: 40px;
+    --track: 46px;
+    --bar-h: 22px;
+    --walker-h: 2.4rem;
     width: 100%;
-    height: 150px;
-    margin: 0;
+    height: 100px;
+    margin: 0.4rem 0 0;
   }
 
-  #sun,
-  #home-start,
-  #home-end,
-  #walker {
-    font-size: 2.2rem;
+  #bar-pct,
+  #bar-caption {
+    font-size: 1rem;
+  }
+
+  #lunch-bowl {
+    width: 1.7rem;
+    height: 1.7rem;
   }
 
   .progress-label {
@@ -453,30 +1041,30 @@ body[data-clock="off"] #office-wall {
   }
 
   #mood {
-    font-size: 2.4rem;
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
   }
 
   #countdown {
-    font-size: 3.6rem;
+    font-size: 3.2rem;
+    line-height: 1.1;
   }
 
-  #countdown.off {
-    font-size: 2.4rem;
+  #until {
+    font-size: 1.05rem;
   }
 
-  #clock {
-    font-size: 1.3rem;
+  #clock-line {
+    font-size: 1.05rem;
   }
 
   #quote {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     max-width: 32ch;
+    margin-top: 0;
   }
 
   #attribution {
-    position: fixed;
-    right: 1rem;
-    bottom: 0.5rem;
     margin: 0;
   }
 }
