@@ -1,5 +1,7 @@
 const WORK_START_HOUR = 9;
 const WORK_END_HOUR = 18;
+const LUNCH_START_HOUR = 12;
+const LUNCH_END_HOUR = 13;
 const REFRESH_CAP_MS = 15 * 60 * 1000;
 const TITLE = "Cat Clock";
 
@@ -202,6 +204,10 @@ function tick() {
     minute: "2-digit",
     timeZoneName: "short",
   });
+
+  const hour = now.getHours();
+  const lunch = state.working && hour >= LUNCH_START_HOUR && hour < LUNCH_END_HOUR;
+  document.body.dataset.lunch = lunch ? "on" : "off";
 
   const percent = dayProgress(now, state);
   progressEl.setAttribute("aria-valuenow", Math.round(percent));

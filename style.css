@@ -282,12 +282,45 @@ h1 {
 }
 
 #office-window,
-#office-wall {
+#office-wall,
+.city-far,
+.city-near,
+.bay {
   transition: fill 1s;
 }
 
+.cloud,
+.lit {
+  transition: opacity 1s;
+}
+
+.lit {
+  opacity: 0;
+}
+
+/* skyline at night: navy sky, silhouetted city, lit windows */
 body[data-clock="off"] #office-window {
   fill: #3d405b;
+}
+
+body[data-clock="off"] .city-far {
+  fill: #4f5475;
+}
+
+body[data-clock="off"] .city-near {
+  fill: #2e2b3f;
+}
+
+body[data-clock="off"] .bay {
+  fill: #34506a;
+}
+
+body[data-clock="off"] .cloud {
+  opacity: 0.2;
+}
+
+body[data-clock="off"] .lit {
+  opacity: 1;
 }
 
 body[data-clock="off"] #office-wall {
@@ -303,8 +336,20 @@ body[data-clock="off"] #office-wall {
   50% { opacity: 0.9; }
 }
 
+/* lunch rice: wisps drift up and fade, staggered via animation-delay */
+.rice-steam {
+  animation: rice-steam 2.4s ease-out infinite;
+}
+
+@keyframes rice-steam {
+  0% { opacity: 0; transform: translateY(1px); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-3px); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .steam,
+  .rice-steam,
   #sun,
   #walker {
     animation: none;

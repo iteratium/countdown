@@ -59,14 +59,33 @@ function makeCat(x, y) {
   }, body);
   const pawL = svg("ellipse", { cx: -5, cy: -2, rx: 3.5, ry: 2.5, fill: "#fff", stroke: INK, "stroke-width": 1.2 }, body);
   const pawR = svg("ellipse", { cx: 5, cy: -2, rx: 3.5, ry: 2.5, fill: "#fff", stroke: INK, "stroke-width": 1.2 }, body);
+  const lunch = makeLunch(body);
 
   const bubble = makeBubble(root);
 
   return {
     x, y, tx: x, ty: y, color,
     state: "rest", timer: 1, place: null, bubble, phase: Math.random() * 10, age: 0,
-    root, body, tail, eyeL, eyeR, pawL, pawR,
+    root, body, tail, eyeL, eyeR, pawL, pawR, lunch, eating: false,
   };
+}
+
+// Rice bowl held in the left paw, chopsticks in the right; swapped in for the paws at lunch.
+function makeLunch(body) {
+  const g = svg("g", { display: "none" }, body);
+  const line = { stroke: INK, "stroke-width": 1.2, "stroke-linejoin": "round" };
+  [-13.5, -11, -8.5].forEach((x, i) => svg("path", {
+    class: "rice-steam", style: `animation-delay: ${-i * 0.8}s`,
+    d: `M${x} -9 q-1.3 -1.75 0 -3.5 q1.3 -1.75 0 -3.5`,
+    fill: "none", stroke: INK, "stroke-width": 1.1, "stroke-linecap": "round",
+  }, g));
+  svg("path", { d: "M-12 -7 q5 -6 10 0 Z", fill: "#fff", ...line }, g);
+  svg("path", { d: "M-13 -7 h12 q0 6 -6 6 q-6 0 -6 -6 Z", fill: "#e07a5f", ...line }, g);
+  svg("ellipse", { cx: -13, cy: -4, rx: 3, ry: 2.5, fill: "#fff", ...line }, g);
+  const hand = svg("g", {}, g);
+  svg("path", { d: "M0 0 L-6 -5 M0.8 -0.8 L-5 -6", fill: "none", stroke: INK, "stroke-width": 0.9, "stroke-linecap": "round" }, hand);
+  svg("ellipse", { cx: 0, cy: 0, rx: 3.5, ry: 2.5, fill: "#fff", ...line }, hand);
+  return { g, hand };
 }
 
 // Flat icons shown above a cat's head, drawn around (0, 0) and popped in by updateCat.
@@ -167,9 +186,29 @@ function leavePlace(cat) {
   cat.place = null;
 }
 
+function goToLunch(cat) {
+  const spot = pickFree(desks) || pickFree(seats);
+  let point = randomFloorPoint();
+  if (spot) {
+    spot.owner = cat;
+    cat.place = spot;
+    point = { x: spot.x, y: spot.seatY ?? spot.y };
+  }
+  walkTo(cat, point, () => {
+    if (!lunchTime()) return chooseNext(cat, false);
+    cat.state = "lunch";
+    cat.timer = 20 + Math.random() * 20;
+  });
+}
+
+function lunchTime() {
+  return document.body.dataset.lunch === "on";
+}
+
 function chooseNext(cat, afterWork) {
   leavePlace(cat);
   if (officeClosed()) return goHome(cat);
+  if (lunchTime()) return goToLunch(cat);
   const r = Math.random();
   if (afterWork) {
     if (r < 0.4) goToCoffee(cat);
@@ -225,6 +264,20 @@ function updateBubble(cat, dt, t) {
   }
 }
 
+function updateLunch(cat, t) {
+  const eating = cat.state === "lunch";
+  if (eating !== cat.eating) {
+    cat.eating = eating;
+    cat.lunch.g.setAttribute("display", eating ? "inline" : "none");
+    cat.pawL.setAttribute("display", eating ? "none" : "inline");
+    cat.pawR.setAttribute("display", eating ? "none" : "inline");
+  }
+  if (!eating) return;
+  // chopsticks travel from the bowl (2, -5) up to the mouth (4, -13) and back
+  const bite = reduceMotion ? 0 : (1 - Math.cos(t * 4 + cat.phase)) / 2;
+  cat.lunch.hand.setAttribute("transform", `translate(${(2 + 2 * bite).toFixed(2)} ${(-5 - 8 * bite).toFixed(2)})`);
+}
+
 function updateCat(cat, dt, t) {
   cat.age += dt;
   let bob = 0;
@@ -248,7 +301,7 @@ function updateCat(cat, dt, t) {
   } else {
     cat.timer -= dt;
     typing = cat.state === "work";
-    squish = typing || cat.state === "meet" ? 0.92 : 1;
+    squish = typing || cat.state === "meet" || cat.state === "lunch" ? 0.92 : 1;
     if (cat.timer <= 0) finishState(cat);
   }
 
@@ -264,6 +317,7 @@ function updateCat(cat, dt, t) {
   const pawBase = typing ? -12 : -2;
   cat.pawL.setAttribute("cy", pawBase + pawLift);
   cat.pawR.setAttribute("cy", pawBase - pawLift);
+  updateLunch(cat, t);
 
   updateBubble(cat, dt, t);
 
@@ -273,6 +327,18 @@ function updateCat(cat, dt, t) {
 }
 
 let lastClock = null;
+let lastLunch = null;
+function syncLunch() {
+  const lunch = lunchTime();
+  if (lunch === lastLunch) return;
+  lastLunch = lunch;
+  for (const cat of cats) {
+    if (cat.leaving) continue;
+    if (lunch && cat.state !== "lunch") chooseNext(cat, false);
+    else if (!lunch && cat.state === "lunch") cat.timer = 0;
+  }
+}
+
 function syncClock() {
   const clock = document.body.dataset.clock;
   if (!clock || clock === lastClock) return;
@@ -289,6 +355,7 @@ function frame(now) {
   const t = now / 1000;
 
   syncClock();
+  syncLunch();
   for (const cat of [...cats]) updateCat(cat, dt, t);
 
   for (const desk of desks) {
