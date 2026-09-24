@@ -164,6 +164,7 @@ function applyState(state) {
   moodEl.textContent = state.label;
   document.body.classList.toggle("friday-night", state.friday);
   document.body.dataset.clock = state.working ? "on" : "off";
+  document.body.dataset.mood = state.key;
   countdownEl.classList.toggle("off", !state.working);
   sunEl.textContent = state.working ? "☀️" : "\u{1F319}";
   document.documentElement.style.setProperty("--accent", ACCENT_COLORS[state.key]);
@@ -207,7 +208,8 @@ function tick() {
 
   const hour = now.getHours();
   const lunch = state.working && hour >= LUNCH_START_HOUR && hour < LUNCH_END_HOUR;
-  document.body.dataset.lunch = lunch ? "on" : "off";
+  const lunchSoon = state.working && hour === LUNCH_START_HOUR - 1 && now.getMinutes() >= 30;
+  document.body.dataset.lunch = lunch ? "on" : lunchSoon ? "soon" : "off";
 
   const percent = dayProgress(now, state);
   progressEl.setAttribute("aria-valuenow", Math.round(percent));

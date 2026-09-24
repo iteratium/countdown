@@ -46,17 +46,20 @@ function makeCat(x, y) {
   const body = svg("g", {}, root);
   const tail = svg("path", { d: "M-8 -6 Q-22 -6 -17 -22", fill: "none", stroke: INK, "stroke-width": 6, "stroke-linecap": "round" }, body);
   svg("path", { d: "M-8 -6 Q-22 -6 -17 -22", fill: "none", stroke: color, "stroke-width": 3, "stroke-linecap": "round" }, body);
-  svg("ellipse", { cx: 0, cy: -8, rx: 10, ry: 9, fill: color, stroke: INK, "stroke-width": 1.5 }, body);
-  svg("polygon", { points: "-9,-27 -8,-38 -1,-30", fill: color, stroke: INK, "stroke-width": 1.5, "stroke-linejoin": "round" }, body);
-  svg("polygon", { points: "9,-27 8,-38 1,-30", fill: color, stroke: INK, "stroke-width": 1.5, "stroke-linejoin": "round" }, body);
-  svg("circle", { cx: 0, cy: -22, r: 9, fill: color, stroke: INK, "stroke-width": 1.5 }, body);
-  const eyeL = svg("ellipse", { cx: -3.5, cy: -22, rx: 1.5, ry: 1.5, fill: INK }, body);
-  const eyeR = svg("ellipse", { cx: 3.5, cy: -22, rx: 1.5, ry: 1.5, fill: INK }, body);
-  svg("path", { d: "M-1.5 -18.5 L1.5 -18.5 L0 -17 Z", fill: "#e07a5f" }, body);
+  svg("ellipse", { cx: 0, cy: -7, rx: 9, ry: 8, fill: color, stroke: INK, "stroke-width": 1.5 }, body);
+  const outline = { stroke: INK, "stroke-width": 1.5, "stroke-linejoin": "round" };
+  for (const s of [-1, 1]) {
+    svg("path", { d: `M${s * 11} -25 L${s * 9} -36 Q${s * 8} -38.5 ${s * 6.2} -36.8 L${s * 1.5} -31 Z`, fill: color, ...outline }, body);
+    svg("path", { d: `M${s * 8.6} -29 L${s * 7.9} -34 L${s * 4.6} -30.8 Z`, fill: "#f4b6a6" }, body);
+  }
+  svg("ellipse", { cx: 0, cy: -22, rx: 11.5, ry: 9.5, fill: color, ...outline }, body);
   svg("path", {
-    d: "M-3 -18 L-14 -20 M-3 -17 L-14 -16 M3 -18 L14 -20 M3 -17 L14 -16",
+    d: "M-10 -19.5 L-14.5 -20.5 M-10 -17.5 L-14.5 -17 M10 -19.5 L14.5 -20.5 M10 -17.5 L14.5 -17",
     fill: "none", stroke: INK, "stroke-width": 0.7, "stroke-linecap": "round",
   }, body);
+  svg("ellipse", { cx: -7, cy: -18.2, rx: 1.9, ry: 1, fill: "#f08a8a", opacity: 0.55 }, body);
+  svg("ellipse", { cx: 7, cy: -18.2, rx: 1.9, ry: 1, fill: "#f08a8a", opacity: 0.55 }, body);
+  const face = makeFace(body);
   const pawL = svg("ellipse", { cx: -5, cy: -2, rx: 3.5, ry: 2.5, fill: "#fff", stroke: INK, "stroke-width": 1.2 }, body);
   const pawR = svg("ellipse", { cx: 5, cy: -2, rx: 3.5, ry: 2.5, fill: "#fff", stroke: INK, "stroke-width": 1.2 }, body);
   const lunch = makeLunch(body);
@@ -66,8 +69,109 @@ function makeCat(x, y) {
   return {
     x, y, tx: x, ty: y, color,
     state: "rest", timer: 1, place: null, bubble, phase: Math.random() * 10, age: 0,
-    root, body, tail, eyeL, eyeR, pawL, pawR, lunch, eating: false,
+    root, body, tail, face, pawL, pawR, lunch, eating: false, silly: Math.random() < 0.4,
   };
+}
+
+// Kawaii expressions, after a "how do you feel today" sheet: each one is its own group of
+// eyes, brows, mouth and an optional mark beside the head, so it reads at small sizes.
+const TEAR = "#7cc4e4";
+const MOUTH = "#e07a5f";
+
+function makeFace(body) {
+  const g = svg("g", {}, body);
+  const line = (w = 1.4) => ({ fill: "none", stroke: INK, "stroke-width": w, "stroke-linecap": "round", "stroke-linejoin": "round" });
+  const looks = {};
+  const look = (name) => (looks[name] = svg("g", { display: "none" }, g));
+
+  const openEyes = (parent, rx = 2.1, ry = 2.6, shines = 1) => {
+    const eyes = [-4.5, 4.5].map((cx) => svg("ellipse", { cx, cy: -22, rx, ry, fill: INK }, parent));
+    for (const cx of [-4.5, 4.5]) {
+      svg("circle", { cx: cx + 0.8, cy: -23, r: 0.85, fill: "#fff" }, parent);
+      if (shines > 1) svg("circle", { cx: cx - 0.7, cy: -20.8, r: 0.45, fill: "#fff" }, parent);
+    }
+    return eyes;
+  };
+  const roundEyes = (parent) => {
+    for (const cx of [-4.5, 4.5]) {
+      svg("circle", { cx, cy: -22, r: 2.8, fill: "#fff", stroke: INK, "stroke-width": 1.1 }, parent);
+      svg("circle", { cx, cy: -22, r: 1.1, fill: INK }, parent);
+    }
+  };
+  const omega = (parent) => svg("path", { d: "M-2.6 -17.4 q1.3 1.6 2.6 0 q1.3 1.6 2.6 0", ...line(1.1) }, parent);
+  const grin = (parent) => svg("path", { d: "M-2.8 -17.6 h5.6 q0 3.6 -2.8 3.6 q-2.8 0 -2.8 -3.6 Z", fill: MOUTH, ...line(1) }, parent);
+  const frown = (parent) => svg("path", { d: "M-2.4 -15.6 q2.4 -2.6 4.8 0", ...line(1.2) }, parent);
+  const drop = (parent, x, y, fill = TEAR) =>
+    svg("path", { d: `M${x} ${y} q-1.6 2.4 0 3.4 q1.6 -1 0 -3.4 Z`, fill, stroke: INK, "stroke-width": 0.7 }, parent);
+  const sparkle = (parent, x, y, r) =>
+    svg("path", { d: `M${x} ${y - r} Q${x} ${y} ${x + r} ${y} Q${x} ${y} ${x} ${y + r} Q${x} ${y} ${x - r} ${y} Q${x} ${y} ${x} ${y - r} Z`, fill: "#f2cc8f", stroke: INK, "stroke-width": 0.7 }, parent);
+
+  let el = look("neutral");
+  const blinkEyes = openEyes(el);
+  omega(el);
+
+  el = look("happy");
+  svg("path", { d: "M-6.8 -21 q2.3 -3.4 4.6 0 M2.2 -21 q2.3 -3.4 4.6 0", ...line(1.5) }, el);
+  grin(el);
+
+  el = look("excited");
+  openEyes(el, 2.5, 3, 2);
+  grin(el);
+  sparkle(el, 14.5, -34, 2.6);
+  sparkle(el, -14.5, -31, 1.8);
+
+  el = look("sleepy");
+  svg("path", { d: "M-6.8 -22 q2.3 1.8 4.6 0 M2.2 -22 q2.3 1.8 4.6 0", ...line(1.5) }, el);
+  svg("ellipse", { cx: 0, cy: -16.4, rx: 0.9, ry: 1.1, fill: MOUTH, stroke: INK, "stroke-width": 0.8 }, el);
+  svg("path", { d: "M11.5 -35 h3.2 l-3.2 3.2 h3.2 M16 -39.5 h2.2 l-2.2 2.2 h2.2", ...line(1.1) }, el);
+
+  el = look("surprised");
+  roundEyes(el);
+  svg("ellipse", { cx: 0, cy: -15.9, rx: 1.4, ry: 1.8, fill: MOUTH, stroke: INK, "stroke-width": 0.9 }, el);
+  svg("path", { d: "M14 -39 V-34", ...line(1.6), stroke: MOUTH }, el);
+  svg("circle", { cx: 14, cy: -31.8, r: 0.9, fill: MOUTH }, el);
+
+  el = look("angry");
+  svg("path", { d: "M-7.2 -26.6 L-2.4 -24.4 M7.2 -26.6 L2.4 -24.4", ...line(1.6) }, el);
+  openEyes(el, 2, 1.8);
+  frown(el);
+  svg("path", { d: "M10.5 -34 Q12 -34 12 -35.5 M14 -35.5 Q14 -34 15.5 -34 M10.5 -32 Q12 -32 12 -30.5 M14 -30.5 Q14 -32 15.5 -32", ...line(1.3), stroke: "#e05a47" }, el);
+
+  el = look("sad");
+  svg("path", { d: "M-7 -25 L-2.8 -26.6 M7 -25 L2.8 -26.6", ...line(1.4) }, el);
+  openEyes(el, 2, 2.4);
+  frown(el);
+  drop(el, -5, -19.8);
+
+  el = look("scared");
+  roundEyes(el);
+  svg("path", { d: "M-3.2 -16.4 l1.6 -1.2 l1.6 1.2 l1.6 -1.2 l1.6 1.2", ...line(1.1) }, el);
+  drop(el, 12.5, -33);
+  svg("path", { d: "M-3 -30 v2.5 M0 -30.5 v3 M3 -30 v2.5", ...line(0.9), stroke: TEAR }, el);
+
+  el = look("hungry");
+  openEyes(el, 2.3, 2.8, 2);
+  svg("path", { d: "M-2.8 -17.6 h5.6 q0 3.2 -2.8 3.2 q-2.8 0 -2.8 -3.2 Z", fill: MOUTH, ...line(1) }, el);
+  drop(el, 2.4, -15.4);
+
+  el = look("silly");
+  svg("ellipse", { cx: -4.5, cy: -22, rx: 2.1, ry: 2.6, fill: INK }, el);
+  svg("circle", { cx: -3.7, cy: -23, r: 0.85, fill: "#fff" }, el);
+  svg("path", { d: "M2.4 -23.6 L6.4 -22 L2.4 -20.4", ...line(1.4) }, el);
+  omega(el);
+  svg("path", { d: "M-1.3 -16.6 h2.6 v1.6 a1.3 1.3 0 0 1 -2.6 0 Z", fill: "#f08a8a", stroke: INK, "stroke-width": 0.8 }, el);
+
+  svg("path", { d: "M-1.3 -19.4 L1.3 -19.4 L0 -18.1 Z", fill: MOUTH }, g);
+  looks.neutral.removeAttribute("display");
+  return { looks, blinkEyes, current: "neutral" };
+}
+
+function setExpression(cat, name) {
+  const face = cat.face;
+  if (face.current === name) return;
+  face.looks[face.current].setAttribute("display", "none");
+  face.looks[name].removeAttribute("display");
+  face.current = name;
 }
 
 // Rice bowl held in the left paw, chopsticks in the right; swapped in for the paws at lunch.
@@ -278,6 +382,22 @@ function updateLunch(cat, t) {
   cat.lunch.hand.setAttribute("transform", `translate(${(2 + 2 * bite).toFixed(2)} ${(-5 - 8 * bite).toFixed(2)})`);
 }
 
+// At the desk the cats feel the same as the page's mood stage.
+const WORK_MOODS = { "stage-0": "scared", "stage-1": "angry", "stage-2": "sad", "stage-3": "happy", "stage-4": "excited" };
+
+function pickExpression(cat) {
+  if (cat.age < 0.9) return "surprised";
+  if (cat.leaving) return "excited";
+  if (cat.state === "coffee" || cat.state === "lunch") return "happy";
+  if (cat.state === "meet") return "sleepy";
+  if (cat.state === "work") {
+    if (document.body.dataset.lunch === "soon") return "hungry";
+    return WORK_MOODS[document.body.dataset.mood] || "neutral";
+  }
+  if (cat.state === "rest" && cat.silly) return "silly";
+  return "neutral";
+}
+
 function updateCat(cat, dt, t) {
   cat.age += dt;
   let bob = 0;
@@ -321,9 +441,9 @@ function updateCat(cat, dt, t) {
 
   updateBubble(cat, dt, t);
 
-  const blink = Math.sin(t * 0.9 + cat.phase * 3) > 0.985 ? 0.3 : 1.5;
-  cat.eyeL.setAttribute("ry", blink);
-  cat.eyeR.setAttribute("ry", blink);
+  setExpression(cat, pickExpression(cat));
+  const blink = Math.sin(t * 0.9 + cat.phase * 3) > 0.985;
+  for (const eye of cat.face.blinkEyes) eye.setAttribute("ry", blink ? 0.3 : 2.6);
 }
 
 let lastClock = null;
