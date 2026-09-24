@@ -60,13 +60,37 @@ function makeCat(x, y) {
   const pawL = svg("ellipse", { cx: -5, cy: -2, rx: 3.5, ry: 2.5, fill: "#fff", stroke: INK, "stroke-width": 1.2 }, body);
   const pawR = svg("ellipse", { cx: 5, cy: -2, rx: 3.5, ry: 2.5, fill: "#fff", stroke: INK, "stroke-width": 1.2 }, body);
 
-  const bubble = svg("text", { x: 0, y: -44, "text-anchor": "middle", "font-size": 11 }, root);
+  const bubble = makeBubble(root);
 
   return {
     x, y, tx: x, ty: y, color,
     state: "rest", timer: 1, place: null, bubble, phase: Math.random() * 10, age: 0,
     root, body, tail, eyeL, eyeR, pawL, pawR,
   };
+}
+
+// Flat icons shown above a cat's head, drawn around (0, 0) and popped in by updateCat.
+function makeBubble(root) {
+  const g = svg("g", {}, root);
+  const line = { stroke: INK, "stroke-width": 1.2, "stroke-linejoin": "round", "stroke-linecap": "round" };
+
+  const coffee = svg("g", { display: "none" }, g);
+  svg("path", { class: "steam", d: "M-1.5 -5 q-1.5 -2 0 -4 M1.5 -5 q1.5 -2 0 -4", fill: "none", ...line }, coffee);
+  svg("path", { d: "M4 -1 q3 0 3 2.5 t-3 2.5", fill: "none", ...line }, coffee);
+  svg("rect", { x: -4, y: -3, width: 8, height: 8, rx: 1.5, fill: "#fdf6ec", ...line }, coffee);
+  svg("rect", { x: -3.2, y: -2.2, width: 6.4, height: 1.6, fill: "#c98f5a" }, coffee);
+
+  const meet = svg("g", { display: "none" }, g);
+  svg("path", { d: "M-4 3 L-6 8 L0 3", fill: "#fff", ...line }, meet);
+  svg("rect", { x: -8, y: -6, width: 16, height: 10, rx: 4, fill: "#fff", ...line }, meet);
+  const dots = [-4, 0, 4].map((cx) => svg("circle", { cx, cy: -1, r: 1.1, fill: INK }, meet));
+
+  const home = svg("g", { display: "none" }, g);
+  svg("rect", { x: -5, y: -1, width: 10, height: 7, fill: "#fdf6ec", ...line }, home);
+  svg("rect", { x: -1.5, y: 2, width: 3, height: 4, fill: "#c98f5a" }, home);
+  svg("path", { d: "M-7 -1 L0 -7.5 L7 -1 Z", fill: "#e07a5f", ...line }, home);
+
+  return { g, icons: { coffee, meet, home }, dots, key: "", age: 0 };
 }
 
 function randomFloorPoint() {
@@ -176,6 +200,31 @@ function removeCat(cat) {
   cats.splice(cats.indexOf(cat), 1);
 }
 
+function updateBubble(cat, dt, t) {
+  const bubble = cat.bubble;
+  let key = "";
+  if (cat.leaving) key = "home";
+  else if (cat.state === "coffee" || cat.state === "meet") key = cat.state;
+
+  if (key !== bubble.key) {
+    if (bubble.key) bubble.icons[bubble.key].setAttribute("display", "none");
+    if (key) bubble.icons[key].removeAttribute("display");
+    bubble.key = key;
+    bubble.age = 0;
+  }
+  if (!key) return;
+
+  bubble.age += dt;
+  const p = reduceMotion ? 1 : Math.min(1, bubble.age / 0.25);
+  const pop = 1 + 2.7 * (p - 1) ** 3 + 1.7 * (p - 1) ** 2; // ease-out-back
+  bubble.g.setAttribute("transform", `translate(0 -47) scale(${pop.toFixed(2)})`);
+
+  if (key === "meet") {
+    const active = Math.floor(t * 3 + cat.phase) % 3;
+    bubble.dots.forEach((dot, i) => dot.setAttribute("opacity", reduceMotion || i === active ? 1 : 0.35));
+  }
+}
+
 function updateCat(cat, dt, t) {
   cat.age += dt;
   let bob = 0;
@@ -216,14 +265,7 @@ function updateCat(cat, dt, t) {
   cat.pawL.setAttribute("cy", pawBase + pawLift);
   cat.pawR.setAttribute("cy", pawBase - pawLift);
 
-  let text = "";
-  if (cat.leaving) text = "\u{1F44B}";
-  else if (cat.state === "coffee") text = "\u2615";
-  else if (cat.state === "meet") text = Math.sin(t * 2 + cat.phase) > 0 ? "\u{1F4AC}" : "\u2026";
-  if (text !== cat.bubbleText) {
-    cat.bubble.textContent = text;
-    cat.bubbleText = text;
-  }
+  updateBubble(cat, dt, t);
 
   const blink = Math.sin(t * 0.9 + cat.phase * 3) > 0.985 ? 0.3 : 1.5;
   cat.eyeL.setAttribute("ry", blink);
