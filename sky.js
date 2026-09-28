@@ -6,7 +6,8 @@
 const TOKYO_TZ = "Asia/Tokyo";
 const WEATHER_URL =
   "https://api.open-meteo.com/v1/forecast?latitude=35.6762&longitude=139.6503" +
-  "&current=temperature_2m,weather_code&daily=sunrise,sunset&timezone=Asia%2FTokyo&forecast_days=1";
+  "&current=temperature_2m,weather_code&hourly=weather_code&past_hours=1&forecast_hours=2" +
+  "&daily=sunrise,sunset&timezone=Asia%2FTokyo&forecast_days=1";
 const WEATHER_REFRESH_MS = 15 * 60 * 1000;
 const TWILIGHT_MIN = 45;
 const WIN = { x: 36, y: 8, w: 186, h: 76 };
@@ -104,7 +105,11 @@ async function loadWeather() {
     const res = await fetch(WEATHER_URL);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    weather = { code: data.current.weather_code, temp: data.current.temperature_2m };
+    // "current" is one 15-minute model snapshot, which on a showery day can land in a dry
+    // gap and paint sun over a rainy city; take the worst of it and the hours either side
+    // (WMO codes rise roughly with severity, so the highest code wins)
+    const code = Math.max(data.current.weather_code, ...(data.hourly?.weather_code ?? []).filter(Number.isFinite));
+    weather = { code, temp: data.current.temperature_2m };
     sunrise = clockMinutes(data.daily.sunrise[0]);
     sunset = clockMinutes(data.daily.sunset[0]);
   } catch {
