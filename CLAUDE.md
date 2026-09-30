@@ -25,9 +25,11 @@ the workday is to being over. Goal: simple and fast, like `profile`.
 - `style.css` — layout/styling, sky/weather states keyed off `data-sky` and
   `data-weather`, Friday-night confetti animation
 - `quotes.json` — mood-matched quotes, keyed by mood stage
-- `cats.json` — cat names and the one/two-row lines a cat says when clicked, keyed
-  by what it is doing (`work` is further keyed by mood stage). `office.js` loads it
-  (`talk()`); clicking a cat talks, clicking anywhere else hires a cat.
+- `cats.json` — the cats' personalities (`cats`: 12 names, each with a tagline and its
+  own lines per situation) and `shared` lines that know the time of day (`work` is
+  keyed by mood stage). A line may have two rows split by `\n`. `office.js` loads it
+  (`talk()`, `pickLine()`); clicking a cat talks, clicking anywhere else hires a cat.
+  Names come from the keys of `cats`, so keep at least `MAX_CATS` of them.
 - `script.js` — countdown/mood logic (9am start, 6pm target, weekends,
   lunch 12–1, off-clock state, Friday-evening confetti), quote picking. Sets
   `data-clock`, `data-mood` and `data-lunch` on `<body>` for the office.
@@ -35,8 +37,13 @@ the workday is to being over. Goal: simple and fast, like `profile`.
   it, and the mood-matched caption ("Freedom loading… please wait").
 - `office.js` — the cat office: cats walk between desks, coffee, meetings and
   lunch. Round-headed coloured cats with 20 doodle expressions (incl. three
-  kinds of crying); each cat picks its own mood from a per-stage mix.
-  `makeHead()` also draws the progress-bar walker. Defines the global `svg()` helper.
+  kinds of crying); each cat picks its own mood from a per-stage mix that its
+  personality tilts. `PERSONAS` holds the 12 cats: coat colour, face lean, silliness
+  (names must match the keys in `cats.json`).
+  Cats spread out so faces stay readable: coffee has 4 standing slots
+  (`coffeeSlots`), wandering and lunch spots come from `spreadPoint()` (furthest from
+  other cats, by `crowding()`), and a resting cat stacked on another moves along
+  (`moveIfCrowded()`). `makeHead()` also draws the progress-bar walker. Defines the global `svg()` helper.
 - `sky.js` — Tokyo sky: time of day from Tokyo sunrise/sunset, weather from
   Open-Meteo every 15 min. Sets `data-sky` and `data-weather` on `<body>`
   and writes "Tokyo 29°C, clear" into the clock line under the countdown;

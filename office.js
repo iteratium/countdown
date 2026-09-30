@@ -1,12 +1,34 @@
 const NS = "http://www.w3.org/2000/svg";
 const INK = "#2e2b3f";
-const MAX_CATS = 10;
+const MAX_CATS = 6;
 const SPEED = 38;
 const FLOOR = { minX: -24, maxX: 302, minY: 132, maxY: 172 };
-const COFFEE_SPOT = { x: -19, y: 138 };
 const EXIT_X = -64;
-const CAT_COLORS = ["#f4a259", "#c9c1b8", "#a8998b", "#f2cc8f", "#e0d5c4", "#a39dbb"];
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// Every cat is one of these personalities: a fixed coat colour, a lean towards (>1) or
+// away from (<1) certain faces, and how often it pulls the silly face while resting.
+// Their taglines and lines are in cats.json under the same names. Nobody's face ever
+// gets weight zero, so any cat can still show any face now and then.
+const PERSONAS = {
+  Mochi: { color: "#f4a259", silly: 0.7, lean: { amazed: 2.5, wink: 2, silly: 2, determined: 1.5, happy: 1.5, sleepy: 0.3, unimpressed: 0.5, calm: 0.5 } },
+  Miso: { color: "#a8998b", silly: 0.03, lean: { annoyed: 3, angry: 2.5, unimpressed: 2, wailing: 2, happy: 0.4, shy: 0.3, touched: 0.4, wink: 0.5, amazed: 0.5, determined: 0.6, calm: 0.5 } },
+  Tofu: { color: "#e0d5c4", silly: 0.1, lean: { sleepy: 5, calm: 2, phew: 1.5, amazed: 0.4, determined: 0.3, angry: 0.3, nervous: 0.5 } },
+  Nori: { color: "#a39dbb", silly: 0.2, lean: { determined: 3, nervous: 2, phew: 1.5, neutral: 1.5, smug: 1.5, silly: 0.5 } },
+  Yuzu: { color: "#f2cc8f", silly: 0.15, lean: { nervous: 2.5, phew: 2.5, unimpressed: 2, neutral: 1.5, teary: 1.5, happy: 0.6 } },
+  Matcha: { color: "#a8c9a0", silly: 0.1, lean: { calm: 4, neutral: 1.5, phew: 1.5, smug: 1.2, angry: 0.25, annoyed: 0.4, wailing: 0.25, nervous: 0.4 } },
+  Taiyaki: { color: "#d9a06b", silly: 0.55, lean: { happy: 2.5, touched: 2, amazed: 1.5, silly: 2, wink: 1.5, angry: 0.4, unimpressed: 0.5 } },
+  Dango: { color: "#e6d0ec", silly: 0.4, lean: { smug: 3, wink: 2.5, shy: 2, amazed: 1.5, silly: 1.5, sleepy: 0.5, angry: 0.5 } },
+  // a night owl: sleepy while the day is young, wide awake by the evening
+  Ramen: {
+    color: "#c9c1b8", silly: 0.3,
+    lean: { sleepy: 4, unimpressed: 1.5, annoyed: 1.3, happy: 0.5 },
+    leanLate: { amazed: 2.5, determined: 2.5, happy: 2, wink: 2, silly: 1.5, sleepy: 0.3 },
+  },
+  Sora: { color: "#9fc9e0", silly: 0.25, lean: { calm: 2.5, amazed: 2.5, touched: 2, wink: 1.5, teary: 1.5, shy: 1.5, determined: 0.4, angry: 0.3, annoyed: 0.5 } },
+  Kuro: { color: "#7a7488", silly: 0, lean: { unimpressed: 4, neutral: 3, smug: 2.5, calm: 1.5, silly: 0.15, happy: 0.3, amazed: 0.4, wink: 0.4, wailing: 0.3, teary: 0.4, shy: 0.4, touched: 0.5 } },
+  Hana: { color: "#f0b6c1", silly: 0.5, lean: { happy: 4, wink: 2.5, touched: 2.5, shy: 2, teary: 1.5, amazed: 1.5, determined: 1.5, angry: 0.2, annoyed: 0.25, sleepy: 0.4, unimpressed: 0.3, wailing: 0.3 } },
+};
 
 const officeEl = document.getElementById("office");
 const sceneEl = document.getElementById("office-scene");
@@ -21,6 +43,8 @@ const seats = [
   { x: 300, y: 142, owner: null },
   { x: 277, y: 156, owner: null },
 ];
+// Standing places by the coffee machine, one cat each so nobody stacks up there.
+const coffeeSlots = [{ x: -19, y: 138 }, { x: 6, y: 138 }, { x: -19, y: 160 }, { x: 6, y: 160 }].map((p) => ({ ...p, owner: null }));
 const cats = [];
 
 function svg(tag, attrs = {}, parent) {
@@ -43,7 +67,8 @@ function buildDesks() {
 }
 
 function makeCat(x, y) {
-  const color = CAT_COLORS[Math.floor(Math.random() * CAT_COLORS.length)];
+  const name = pickName();
+  const color = PERSONAS[name].color;
   const root = svg("g", {}, catsLayer);
   const body = svg("g", {}, root);
   const tail = svg("path", { d: "M-8 -6 Q-22 -6 -17 -22", fill: "none", stroke: INK, "stroke-width": 6, "stroke-linecap": "round" }, body);
@@ -57,9 +82,9 @@ function makeCat(x, y) {
   const bubble = makeBubble(root);
 
   return {
-    x, y, tx: x, ty: y, color,
+    x, y, tx: x, ty: y, color, name,
     state: "rest", timer: 1, place: null, bubble, phase: Math.random() * 10, age: 0,
-    root, body, tail, face, pawL, pawR, lunch, eating: false, silly: Math.random() < 0.4,
+    root, body, tail, face, pawL, pawR, lunch, eating: false, silly: Math.random() < PERSONAS[name].silly,
   };
 }
 
@@ -416,6 +441,50 @@ function randomFloorPoint() {
   };
 }
 
+// Two cats keep their faces clear of each other when they stand 24 apart sideways or 21
+// in depth. crowding() is how far a point is from the nearest other cat (or the spot it
+// is walking to), in those units: under 1 means the faces would overlap.
+const CLEAR = { x: 24, y: 21 };
+function crowding(point, cat) {
+  let nearest = Infinity;
+  for (const other of cats) {
+    if (other === cat || other.leaving) continue;
+    const at = other.state === "walk" && other.dest ? other.dest : other;
+    nearest = Math.min(nearest, Math.max(Math.abs(point.x - at.x) / CLEAR.x, Math.abs(point.y - at.y) / CLEAR.y));
+  }
+  return nearest;
+}
+
+// The best of a dozen random floor points: the one furthest from every other cat.
+function spreadPoint(cat) {
+  let best = null;
+  let bestScore = -1;
+  for (let i = 0; i < 12; i++) {
+    const point = randomFloorPoint();
+    const score = crowding(point, cat);
+    if (score > bestScore) {
+      best = point;
+      bestScore = score;
+    }
+  }
+  return best;
+}
+
+// A cat resting right on top of another moves along, if somewhere clearly roomier exists.
+function moveIfCrowded(cat, dt) {
+  cat.nudge = (cat.nudge ?? 2) - dt;
+  if (cat.state !== "rest" || cat.nudge > 0) return;
+  cat.nudge = 2 + Math.random();
+  const here = crowding(cat, cat);
+  if (here >= 0.7) return;
+  const there = spreadPoint(cat);
+  if (crowding(there, cat) < here + 0.3) return;
+  walkTo(cat, there, () => {
+    cat.state = "rest";
+    cat.timer = 2 + Math.random() * 3;
+  });
+}
+
 // The meeting room's glass wall runs from (234, 88) at the back to (222, 178) at the front.
 // Cats only cross it through the door gap, so walks in or out go via a point on each side.
 const WANDER_MAX_X = 212;
@@ -433,6 +502,7 @@ function walkStraight(cat, point, then) {
 }
 
 function walkTo(cat, point, then) {
+  cat.dest = point;
   const from = inMeetingRoom(cat);
   if (from === inMeetingRoom(point)) return walkStraight(cat, point, then);
   const [first, second] = from ? [MEETING_DOOR.in, MEETING_DOOR.out] : [MEETING_DOOR.out, MEETING_DOOR.in];
@@ -440,7 +510,7 @@ function walkTo(cat, point, then) {
 }
 
 function goWander(cat) {
-  walkTo(cat, randomFloorPoint(), () => {
+  walkTo(cat, spreadPoint(cat), () => {
     cat.state = "rest";
     cat.timer = 2 + Math.random() * 3;
   });
@@ -459,11 +529,11 @@ function goToDesk(cat) {
 }
 
 function goToCoffee(cat) {
-  const spot = {
-    x: COFFEE_SPOT.x + (Math.random() - 0.5) * 14,
-    y: COFFEE_SPOT.y + Math.random() * 10,
-  };
-  walkTo(cat, spot, () => {
+  const slot = pickFree(coffeeSlots);
+  if (!slot) return goWander(cat);
+  slot.owner = cat;
+  cat.place = slot;
+  walkTo(cat, slot, () => {
     cat.state = "coffee";
     cat.timer = 3 + Math.random() * 3;
   });
@@ -476,7 +546,7 @@ function goToMeeting(cat) {
   cat.place = seat;
   walkTo(cat, seat, () => {
     cat.state = "meet";
-    cat.meetMood = pickOne(MEETING_MOODS);
+    cat.meetMood = rollFace(tilt(MEETING_MOODS, cat));
     cat.timer = 6 + Math.random() * 7;
   });
 }
@@ -484,7 +554,7 @@ function goToMeeting(cat) {
 function goHome(cat) {
   leavePlace(cat);
   cat.leaving = true;
-  cat.leaveMood = pickOne(LEAVING_MOODS);
+  cat.leaveMood = rollFace(tilt(LEAVING_MOODS, cat));
   walkTo(cat, { x: EXIT_X, y: cat.y }, () => removeCat(cat));
 }
 
@@ -510,7 +580,7 @@ function leavePlace(cat) {
 
 function goToLunch(cat) {
   const spot = pickFree(desks) || pickFree(seats);
-  let point = randomFloorPoint();
+  let point = spreadPoint(cat);
   if (spot) {
     spot.owner = cat;
     cat.place = spot;
@@ -574,8 +644,9 @@ function removeCat(cat) {
   cats.splice(cats.indexOf(cat), 1);
 }
 
-// Click a cat and it says something that fits what it is doing. Lines and names come
-// from cats.json; a line may have two rows, split by "\n". Speech lives in its own layer
+// Click a cat and it says something that fits what it is doing. cats.json has a personality
+// per cat name (a tagline and its own lines) plus shared lines for the time of day; a line
+// may have two rows, split by "\n". Speech lives in its own layer
 // above every cat so a bubble is never hidden behind a cat in front.
 const speechLayer = svg("g", { "pointer-events": "none" });
 catsLayer.after(speechLayer);
@@ -583,12 +654,14 @@ let catData = null;
 fetch("cats.json").then((res) => res.json()).then((data) => { catData = data; }).catch(() => {});
 
 function pickName() {
-  const all = catData ? catData.names : ["Mochi"];
+  const all = Object.keys(PERSONAS);
   const used = new Set(cats.map((cat) => cat.name));
   const free = all.filter((name) => !used.has(name));
   return pickOne(free.length ? free : all);
 }
 
+// A cat mostly says something in its own voice, and sometimes a shared line that knows
+// the time of day (at its desk, what stage the workday is at).
 function pickLine(cat) {
   let pool = null;
   if (catData) {
@@ -601,18 +674,21 @@ function pickLine(cat) {
     else if (guardOnDuty()) key = "late";
     else if (officeClosed()) key = "weekend";
     else if (state === "work") key = "work";
-    pool = key === "work" ? catData.work[document.body.dataset.mood] : catData[key];
+    const own = catData.cats[cat.name]?.lines[key];
+    const shared = key === "work" ? catData.shared.work[document.body.dataset.mood] : catData.shared[key];
+    pool = own && shared ? (Math.random() < 0.65 ? own : shared) : own || shared;
   }
-  const fresh = (pool || ["Meow!"]).filter((line) => line !== cat.lastLine);
-  cat.lastLine = pickOne(fresh.length ? fresh : pool || ["Meow!"]);
+  const fallback = ["Meow!"];
+  const fresh = (pool || fallback).filter((line) => line !== cat.lastLine);
+  cat.lastLine = pickOne(fresh.length ? fresh : pool || fallback);
   return cat.lastLine;
 }
 
 function talk(cat) {
-  cat.name ??= pickName();
+  const header = catData?.cats[cat.name] ? `${cat.name} · ${catData.cats[cat.name].tagline}` : cat.name;
   const rows = pickLine(cat).split("\n");
   const sp = cat.speech || (cat.speech = { g: svg("g", {}, speechLayer) });
-  const w = Math.max(cat.name.length * 0.85, ...rows.map((row) => row.length)) * 3.1 + 9;
+  const w = Math.max(header.length * 0.8, ...rows.map((row) => row.length)) * 3.1 + 9;
   const h = 11 + rows.length * 7;
   const line = { stroke: INK, "stroke-width": 1.2, "stroke-linejoin": "round" };
   const font = { "text-anchor": "middle", "font-weight": 700, "font-family": "Fredoka, system-ui, sans-serif" };
@@ -623,7 +699,7 @@ function talk(cat) {
   svg("path", { d: "M-2.4 -5 L0 0 L2.4 -5 Z", fill: "#fff", ...line }, sp.g);
   sp.box = svg("g", {}, sp.g);
   svg("rect", { x: -w / 2, y: -5 - h, width: w, height: h, rx: 3.5, fill: "#fff", ...line }, sp.box);
-  svg("text", { x: 0, y: 1.5 - h, "font-size": 4.3, fill: "#e07a5f", ...font }, sp.box).textContent = cat.name;
+  svg("text", { x: 0, y: 1.5 - h, "font-size": 4.3, fill: "#e07a5f", ...font }, sp.box).textContent = header;
   rows.forEach((row, i) => {
     svg("text", { x: 0, y: 1.5 - h + 7 * (i + 1), "font-size": 5.6, fill: INK, ...font }, sp.box).textContent = row;
   });
@@ -690,7 +766,7 @@ function updateLunch(cat, t) {
 }
 
 // At the desk each cat has its own mood, drawn from a mix that brightens through the
-// day, so the office is never all one face. Tears are rare.
+// day and tilted by its personality, so the office is never all one face. Tears are rare.
 const WORK_MOOD_MIX = {
   "stage-0": { sleepy: 3, unimpressed: 3, teary: 1, phew: 1, neutral: 1 },
   "stage-1": { annoyed: 3, angry: 2, unimpressed: 2, sleepy: 1, wailing: 0.5 },
@@ -698,20 +774,41 @@ const WORK_MOOD_MIX = {
   "stage-3": { happy: 2, calm: 2, wink: 1, silly: 1, shy: 1, neutral: 1, smug: 1 },
   "stage-4": { amazed: 3, determined: 2, touched: 2, happy: 2, silly: 1, wink: 1, smug: 1 },
 };
-const MEETING_MOODS = ["sleepy", "unimpressed", "phew", "neutral", "calm"];
-const LEAVING_MOODS = ["amazed", "touched", "happy", "wink"];
+// now and then someone cannot take the meeting any more and wails
+const MEETING_MOODS = { sleepy: 1, unimpressed: 1, phew: 1, neutral: 1, calm: 1, wailing: 0.5 };
+const LEAVING_MOODS = { amazed: 1, touched: 1, happy: 1, wink: 1 };
 const pickOne = (list) => list[Math.floor(Math.random() * list.length)];
 
-// Picked when a cat sits down, favouring faces no other working cat is wearing.
+// A cat's personality tilts a base mix of faces: faces it leans towards count for more
+// (even ones the mix lacks), faces it leans away from count for less, none drops to zero.
+// A night owl (leanLate) changes its lean once the day is nearly over.
+function tilt(base, cat) {
+  const persona = PERSONAS[cat.name];
+  const late = ["stage-3", "stage-4"].includes(document.body.dataset.mood);
+  const lean = (late && persona.leanLate) || persona.lean;
+  const mix = {};
+  for (const [face, weight] of Object.entries(base)) mix[face] = weight * (lean[face] ?? 1);
+  // a face the mix lacks joins in at a typical weight, so a cheerful cat is still cheerful in a grumpy hour
+  const typical = Object.values(base).reduce((sum, weight) => sum + weight, 0) / Object.keys(base).length;
+  for (const [face, m] of Object.entries(lean)) if (m > 1 && !(face in base)) mix[face] = typical * m * 0.7;
+  return mix;
+}
+
+// Weighted pick from { face: weight }; faces in `taken` (worn by other cats) count for less.
+function rollFace(mix, taken = new Set()) {
+  const pool = Object.entries(mix).map(([face, weight]) => [face, taken.has(face) ? weight * 0.35 : weight]);
+  let roll = Math.random() * pool.reduce((sum, [, weight]) => sum + weight, 0);
+  for (const [face, weight] of pool) if ((roll -= weight) < 0) return face;
+  return pool[0][0];
+}
+
+// Picked when a cat sits down: its own lean on the day's mix, favouring faces no other
+// working cat is wearing.
 function pickWorkMood(cat) {
-  const mix = { ...(WORK_MOOD_MIX[document.body.dataset.mood] || { neutral: 1 }) };
+  const mix = tilt(WORK_MOOD_MIX[document.body.dataset.mood] || { neutral: 1 }, cat);
   if (document.body.dataset.lunch === "soon") mix.hungry = 5;
   const taken = new Set(cats.filter((c) => c !== cat && c.state === "work").map((c) => c.workMood));
-  const fresh = Object.entries(mix).filter(([name]) => !taken.has(name));
-  const pool = fresh.length ? fresh : Object.entries(mix);
-  let roll = Math.random() * pool.reduce((sum, [, weight]) => sum + weight, 0);
-  for (const [name, weight] of pool) if ((roll -= weight) < 0) return name;
-  return pool[0][0];
+  return rollFace(mix, taken);
 }
 
 // The progress-bar walker wears the same faces: the page's mood in one face.
@@ -762,6 +859,7 @@ function updateCat(cat, dt, t) {
     }
   } else {
     cat.timer -= dt;
+    moveIfCrowded(cat, dt);
     typing = cat.state === "work";
     squish = typing || cat.state === "meet" || cat.state === "lunch" ? 0.92 : 1;
     if (cat.timer <= 0) finishState(cat);

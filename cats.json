@@ -1,97 +1,555 @@
 {
-  "names": [
-    "Mochi", "Miso", "Tofu", "Nori", "Yuzu", "Matcha", "Sushi", "Taiyaki", "Dango", "Ramen",
-    "Udon", "Onigiri", "Azuki", "Kinako", "Momo", "Sora", "Hana", "Kuro", "Shiro", "Tama"
-  ],
-  "work": {
-    "stage-0": [
-      "Is it Friday yet?",
-      "Coffee first.\nThen feelings.",
-      "Eyes open.\nBrain: loading.",
-      "So many emails,\nso little me.",
-      "*yawns*\nJust five more minutes"
+ "cats": {
+  "Mochi": {
+   "tagline": "chief coffee officer",
+   "lines": {
+    "work": [
+     "Powered by\ncaffeine and hope.",
+     "I typed this with\nmy jittery paws.",
+     "Fourth coffee kicked in.\nI can see colors!",
+     "Emails? Bring 'em on!\n...slowly."
     ],
-    "stage-1": [
-      "Another meeting\nthat could be an email.",
-      "Please stop\nreplying all.",
-      "My keyboard\nis judging me.",
-      "Six PM feels\nvery far away.",
-      "I have opinions\nabout this spreadsheet."
+    "coffee": [
+     "Refill number four.\nWorth it.",
+     "The machine and I\nhave an understanding."
     ],
-    "stage-2": [
-      "Halfway there!\nProbably.",
-      "Sending the report.\nFingers crossed.",
-      "Deep breaths.\nWe can do this.",
-      "Snack o'clock\ncannot come soon enough.",
-      "Look busy,\nthe boss is near."
+    "meet": [
+     "I'll take notes.\n*draws a cat*",
+     "Can we do this\nover coffee?"
     ],
-    "stage-3": [
-      "I can see\nthe finish line!",
-      "Almost home,\nalmost home...",
-      "Typing at\nmaximum speed.",
-      "Tonight: sofa,\nsnacks, zero emails.",
-      "Just one more\nspreadsheet."
+    "lunch": [
+     "Coffee with\na side of rice.",
+     "Lunch: the only\nmeeting I love."
     ],
-    "stage-4": [
-      "Freedom is\nright there!",
-      "Bags half packed.\nDon't tell anyone.",
-      "I can smell\nthe weekend.",
-      "Sixty minutes.\nSixty little minutes.",
-      "Hello, sofa.\nMiss you already."
+    "wander": [
+     "Looking for\nthe good beans.",
+     "Vibrating gently\nacross the office."
+    ],
+    "late": [
+     "One more coffee\nand I'm out.",
+     "Still buzzing.\nCan't leave yet."
+    ],
+    "leaving": [
+     "Off to find\nmore coffee!",
+     "Bye! Don't touch\nmy mug!"
+    ],
+    "scolded": [
+     "Yes! Going!\nTaking my mug."
     ]
+   }
+  },
+  "Miso": {
+   "tagline": "professional grump",
+   "lines": {
+    "work": [
+     "Nobody asked\nfor this dashboard.",
+     "I have concerns.\nMany concerns.",
+     "This is fine.\n(It's not fine.)",
+     "Please stop\nbreathing so loudly."
+    ],
+    "coffee": [
+     "Nothing personal.\nI hate everyone equally.",
+     "Decaf? Unacceptable."
+    ],
+    "meet": [
+     "This could have\nbeen a sticky note.",
+     "Ugh. Slides."
+    ],
+    "lunch": [
+     "Don't talk to me.\nI'm eating.",
+     "Rice is the only\nthing I trust."
+    ],
+    "wander": [
+     "Who moved\nmy chair?",
+     "Just walking away\nfrom my problems."
+    ],
+    "late": [
+     "I'm not staying late.\nI'm being punished.",
+     "Fine. Ten more\nminutes. Ugh."
+    ],
+    "leaving": [
+     "Finally.\nDon't call me.",
+     "Out. Bye. Ugh."
+    ],
+    "scolded": [
+     "I was leaving!\nRude.",
+     "Don't rush me,\nrobot."
+    ]
+   }
+  },
+  "Tofu": {
+   "tagline": "always napping",
+   "lines": {
+    "work": [
+     "zzz... I mean,\nI'm thinking.",
+     "My eyes are resting.\nI'm working!",
+     "Keyboard makes\na decent pillow.",
+     "Just five more\nminutes of zzz."
+    ],
+    "coffee": [
+     "Coffee doesn't work\non me. Still trying.",
+     "*yawn* Is this\nespresso or water?"
+    ],
+    "meet": [
+     "*sleeps with\neyes open*",
+     "I heard nothing.\nPerfect."
+    ],
+    "lunch": [
+     "Rice, then nap.\nThe sacred order.",
+     "Food coma\nloading..."
+    ],
+    "wander": [
+     "Looking for a\nsunny spot.",
+     "Where's my\nnearest nap?"
+    ],
+    "late": [
+     "Napping at my desk\nis working late, right?",
+     "So sleepy...\nbut so loyal."
+    ],
+    "leaving": [
+     "Home. Bed.\nFinally.",
+     "Nap time,\nsee ya."
+    ],
+    "scolded": [
+     "Huh? Oh!\nGoing home!"
+    ]
+   }
+  },
+  "Nori": {
+   "tagline": "spreadsheet wizard",
+   "lines": {
+    "work": [
+     "VLOOKUP is my\nlove language.",
+     "That's not a bug,\nit's a feature.",
+     "Pivot tables\nspark joy.",
+     "Ctrl+Z is\nmy best friend."
+    ],
+    "coffee": [
+     "Coffee break =\nbackground recalc.",
+     "Caffeine level:\n#REF!"
+    ],
+    "meet": [
+     "Let me share\nmy screen... again.",
+     "That's on\nslide 47."
+    ],
+    "lunch": [
+     "Sorting my rice\ninto columns.",
+     "Lunch: a formula\nfor happiness."
+    ],
+    "wander": [
+     "Off to fix\nsomeone's macro.",
+     "Have you tried\nturning it off?"
+    ],
+    "late": [
+     "Just one more\nformula...",
+     "The spreadsheet\nneeds me."
+    ],
+    "leaving": [
+     "Saving. Saving.\nSaved! Bye!",
+     "Auto-saved.\nSee ya."
+    ],
+    "scolded": [
+     "Let me just\nsave first!"
+    ]
+   }
+  },
+  "Yuzu": {
+   "tagline": "meeting survivor",
+   "lines": {
+    "work": [
+     "Circling back on\nthe deliverables.",
+     "Let's align on\nthe synergies.",
+     "Moving the needle,\none paw at a time.",
+     "Per my last\nemail... meow."
+    ],
+    "coffee": [
+     "Let's take this\noffline. To coffee.",
+     "Quick sync\nat the machine?"
+    ],
+    "meet": [
+     "Can we table\nthis? (Furniture pun.)",
+     "Let's take a\nstep back.",
+     "I'll circle back\nwith action items."
+    ],
+    "lunch": [
+     "Lunch and learn.\nMostly lunch.",
+     "Blocking my calendar\nfor rice."
+    ],
+    "wander": [
+     "Just touching\nbase with everyone.",
+     "Running a\nquick standup."
+    ],
+    "late": [
+     "Let me just\nclose the loop.",
+     "EOD was\nhours ago. Yikes."
+    ],
+    "leaving": [
+     "Let's regroup\ntomorrow!",
+     "Signing off.\nThanks all!"
+    ],
+    "scolded": [
+     "Noted. Actioning\nnow!"
+    ]
+   }
+  },
+  "Matcha": {
+   "tagline": "zen master",
+   "lines": {
+    "work": [
+     "One task at a time.\nBreathe.",
+     "The inbox is\nlike a river.",
+     "Do the work.\nBe the cat.",
+     "Even a keyboard\nneeds rest."
+    ],
+    "coffee": [
+     "Tea is also\nacceptable.",
+     "The coffee\nteaches patience."
+    ],
+    "meet": [
+     "The meeting\nwill pass.",
+     "Silence is\na good agenda."
+    ],
+    "lunch": [
+     "Eat the rice.\nBe the rice.",
+     "Chew slowly.\nThink deeply."
+    ],
+    "wander": [
+     "I walk. Therefore\nI am.",
+     "The path is\nthe destination."
+    ],
+    "late": [
+     "Work is endless.\nSo is tea.",
+     "Even the moon\nclocks out."
+    ],
+    "leaving": [
+     "The day ends.\nBe at peace.",
+     "Go home.\nBreathe."
+    ],
+    "scolded": [
+     "A robot teaches\nme humility."
+    ]
+   }
+  },
+  "Taiyaki": {
+   "tagline": "lunch enthusiast",
+   "lines": {
+    "work": [
+     "Thinking about\nlunch. Working too.",
+     "Is it snack time\nyet? Asking for me.",
+     "My stomach\nhas a deadline.",
+     "Typing... and\nimagining tempura."
+    ],
+    "coffee": [
+     "Any biscuits\nnear the machine?",
+     "Coffee needs\na cookie."
+    ],
+    "meet": [
+     "Are there\nsnacks in here?",
+     "I'm only here\nfor the cookies."
+    ],
+    "lunch": [
+     "Best. Part.\nOf. The day.",
+     "Save me the\nlast onigiri!"
+    ],
+    "wander": [
+     "Sniffing out\nsnacks.",
+     "Following a\nmysterious smell."
+    ],
+    "late": [
+     "Dinner or\novertime? Dinner.",
+     "Running on\nfumes and snacks."
+    ],
+    "leaving": [
+     "Dinner!\nBye!",
+     "Off to find\nramen!"
+    ],
+    "scolded": [
+     "Only if\nthere's dinner!"
+    ]
+   }
+  },
+  "Dango": {
+   "tagline": "office gossip",
+   "lines": {
+    "work": [
+     "Did you hear?\nThe printer quit.",
+     "*whispers* Tofu\nnapped again.",
+     "I know everyone's\nsecrets. Ask me.",
+     "Typing loudly\nto hide my gossip."
+    ],
+    "coffee": [
+     "Water cooler's busy.\nCoffee it is!",
+     "Psst. Come here.\nBig news."
+    ],
+    "meet": [
+     "*passes notes\nunder the table*",
+     "Did you see\nMiso's face?"
+    ],
+    "lunch": [
+     "Best gossip\nhappens at lunch.",
+     "Guess who's\ndating who..."
+    ],
+    "wander": [
+     "Just casually\nlistening in.",
+     "Nothing to see.\nJust walking. Listening."
+    ],
+    "late": [
+     "They're all\nstill here! Spicy.",
+     "Staying for\nthe drama."
+    ],
+    "leaving": [
+     "See you tomorrow.\nNew rumors!",
+     "Bye! Tell\nno one."
+    ],
+    "scolded": [
+     "Who told\nthe robot?!"
+    ]
+   }
+  },
+  "Ramen": {
+   "tagline": "night owl",
+   "lines": {
+    "work": [
+     "I do my best\nwork at 3 AM.",
+     "Is it morning\nalready? Ugh.",
+     "My brain wakes up\nat sunset.",
+     "Good morning.\n...Why so bright?"
+    ],
+    "coffee": [
+     "Morning already?\nSend help.",
+     "Second breakfast,\nfirst coffee."
+    ],
+    "meet": [
+     "I'm awake.\nJust... quietly.",
+     "Wake me for\nthe action items."
+    ],
+    "lunch": [
+     "My breakfast.\nDon't judge.",
+     "Rise and shine.\nIt's noon."
+    ],
+    "wander": [
+     "Too much sun\nin here.",
+     "Where's the\nnight shift?"
+    ],
+    "late": [
+     "Finally, my\ntime to shine!",
+     "Night shift?\nYes please."
+    ],
+    "leaving": [
+     "Going home to\nbe productive.",
+     "Off to actually\nwork. At night."
+    ],
+    "scolded": [
+     "But I'm just\nwarming up!"
+    ]
+   }
+  },
+  "Sora": {
+   "tagline": "professional daydreamer",
+   "lines": {
+    "work": [
+     "Mentally in\nOkinawa right now.",
+     "Checking flights\n...for work.",
+     "Hokkaido has snow,\nI have email.",
+     "Every spreadsheet\nis a beach."
+    ],
+    "coffee": [
+     "Coffee tastes\nbetter in Kyoto.",
+     "Planning my\nnext getaway."
+    ],
+    "meet": [
+     "Pretending to listen.\nBooking flights.",
+     "Nice slide.\nLooks like Fuji."
+    ],
+    "lunch": [
+     "Ramen in Fukuoka\nwould be nice.",
+     "Dream trip lunch:\nsushi!"
+    ],
+    "wander": [
+     "Stretching toward\nthe window.",
+     "Dreaming\nout loud."
+    ],
+    "late": [
+     "Overtime pays for\nmy next trip. Right?",
+     "Do I have any\nvacation days left?"
+    ],
+    "leaving": [
+     "Off to an onsen\n(in my mind)!",
+     "Bye! Wish me\nsunny skies."
+    ],
+    "scolded": [
+     "Okay, okay!\nHeading home..."
+    ]
+   }
+  },
+  "Kuro": {
+   "tagline": "mysterious intern",
+   "lines": {
+    "work": [
+     "I have\nseen things.",
+     "The spreadsheet\nknows.",
+     "...",
+     "I'm not\nan intern. Maybe."
+    ],
+    "coffee": [
+     "Coffee.\nBlack. Like me.",
+     "The machine\nwatches us."
+    ],
+    "meet": [
+     "I am\nlistening.",
+     "Interesting.\n*writes nothing*"
+    ],
+    "lunch": [
+     "I eat.\nI observe.",
+     "Rice. Then\nshadows."
+    ],
+    "wander": [
+     "I was here\nbefore you.",
+     "Don't mind me.\nI live here."
+    ],
+    "late": [
+     "I do not\nclock out.",
+     "Time is\nan illusion."
+    ],
+    "leaving": [
+     "I vanish.",
+     "See you in\nyour dreams."
+    ],
+    "scolded": [
+     "Fine.\nBut I'll be back."
+    ]
+   }
+  },
+  "Hana": {
+   "tagline": "team cheerleader",
+   "lines": {
+    "work": [
+     "You're doing\namazing, sweetie!",
+     "Every keystroke is\na tiny victory!",
+     "Almost there!\nGo team, go!",
+     "I believe in\nthis spreadsheet!"
+    ],
+    "coffee": [
+     "Coffee break!\nYou earned it!",
+     "Stay hydrated!\nAnd caffeinated!"
+    ],
+    "meet": [
+     "Great point,\nevery single one!",
+     "Team, this is\ngoing to be GREAT!"
+    ],
+    "lunch": [
+     "Lunch! You\ndeserve it!",
+     "Yay, rice!\nGo us!"
+    ],
+    "wander": [
+     "Just spreading\ngood vibes!",
+     "Who needs\na high five?"
+    ],
+    "late": [
+     "You've got this!\nJust a little more!",
+     "So proud of\nyou all!"
+    ],
+    "leaving": [
+     "Great job today!\nSee you tomorrow!",
+     "You were\namazing today!"
+    ],
+    "scolded": [
+     "Aw, okay!\nGoing home!"
+    ]
+   }
+  }
+ },
+ "shared": {
+  "work": {
+   "stage-0": [
+    "Nine AM: the long\nhallway begins.",
+    "Coffee hasn't kicked in.\nNeither have I.",
+    "My alarm and I\nare not speaking.",
+    "Is it Friday?\n...No. Sadly.",
+    "First email of the day.\nAlready tired."
+   ],
+   "stage-1": [
+    "Meeting about\nthe meeting. Again.",
+    "Someone reply-all'd.\nWe are not okay.",
+    "The clock is\nmoving backwards.",
+    "Lunch is my\nonly plan.",
+    "My keyboard is\njudging me."
+   ],
+   "stage-2": [
+    "Post-lunch slump:\nthe final boss.",
+    "This afternoon is\nlong. Just... long.",
+    "Someone please\nopen a window.",
+    "I'm working.\nLook, I'm typing.",
+    "Three more hours.\nAbout ninety snacks."
+   ],
+   "stage-3": [
+    "Six o'clock is\nin sight!",
+    "One more email.\nOne. More.",
+    "Almost home.\nSofa, I'm coming.",
+    "I can taste\nfreedom. Salty.",
+    "Typing at the\nspeed of hope."
+   ],
+   "stage-4": [
+    "Sixty minutes.\nI can do sixty minutes.",
+    "Bag half-packed.\nPlausible deniability.",
+    "Do not give\nme new tasks.",
+    "Smells like\nweekend energy.",
+    "Coat on.\nPretending to work."
+   ]
   },
   "coffee": [
-    "Coffee is\nmy love language.",
-    "This is my third.\nDon't judge.",
-    "Espresso now,\nproductivity later.",
-    "Meet me at\nthe machine."
+   "Coffee is my\nlove language.",
+   "Third cup. We do\nnot discuss it.",
+   "The machine and I\nhave an understanding.",
+   "Espresso now,\nproductivity later."
   ],
   "meet": [
-    "Let's circle back.",
-    "Can everyone see\nmy screen?",
-    "You're on mute!",
-    "This meeting\nis my nap time.",
-    "Per my last\nemail...meow."
+   "Can you see\nmy screen?",
+   "You're on mute!",
+   "Let's circle back.\n(We won't.)",
+   "Nodding at the camera.\nSleeping inside.",
+   "Great point!\nWhat was it?"
   ],
   "lunch": [
-    "Itadakimasu!",
-    "Rice is life.",
-    "Chopsticks:\nexpert level.",
-    "Lunch break:\nthe best meeting."
+   "Itadakimasu!",
+   "Rice is life.",
+   "Chopsticks:\nexpert level.",
+   "Lunch: the only\nmeeting I love."
   ],
   "dizzy": [
-    "Whoa, room's\nspinning...",
-    "So many slides...",
-    "Was that\nan agenda item?"
+   "Whoa, the room\nis spinning...",
+   "So many slides...",
+   "Was that an\nagenda item?"
   ],
   "wander": [
-    "Just stretching\nmy paws.",
-    "I'm not lost,\nI'm exploring.",
-    "Walking meeting?\nSure.",
-    "Looking for\nmy stapler.",
-    "Nice to meet you!\nI'm hired, right?"
+   "Stretching my paws.\nLooks busy, right?",
+   "Walking meeting.\nWith no one.",
+   "I'm not lost.\nI'm exploring.",
+   "Nice to meet you!\nAm I hired?",
+   "Looking for my\nstapler. Again."
   ],
   "weekend": [
-    "Weekend visit!\nNo work, only vibes.",
-    "The office is\nso quiet today.",
-    "Don't tell anyone\nI stopped by.",
-    "Just checking\nthe coffee machine."
+   "Weekend visit!\nNo work, only vibes.",
+   "The office is\nso quiet today.",
+   "Don't tell anyone\nI stopped by.",
+   "Just checking on\nthe coffee machine."
   ],
   "late": [
-    "Just five more\nminutes, promise.",
-    "Working late\nagain...",
-    "Is that\nKeibi-kun?",
-    "I'll go home\nafter this email."
+   "Just five more\nminutes. Promise.",
+   "Working late\nagain... classic.",
+   "Is that\nKeibi-kun?!",
+   "I'll go home\nafter this email."
   ],
   "scolded": [
-    "Sorry, going\nhome now!",
-    "Yes sir!\nHeading out!",
-    "Eek! Caught!"
+   "Sorry! Going\nhome now!",
+   "Yes, sir!\nHeading out!",
+   "Eek! Caught!"
   ],
   "leaving": [
-    "Otsukaresama\ndeshita!",
-    "See you\ntomorrow!",
-    "Home time!\nBye bye!",
-    "Free at last!"
+   "Otsukaresama\ndeshita!",
+   "See you\ntomorrow!",
+   "Home time!\nBye bye!",
+   "Free at last!"
   ]
+ }
 }
