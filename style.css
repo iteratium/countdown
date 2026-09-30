@@ -898,7 +898,65 @@ body[data-weather="storm"] .bolt {
   to { stroke-dashoffset: -8.6; }
 }
 
+/* seasonal decor: hidden until season.js sets <body data-season> */
+.deco-autumn,
+.deco-halloween,
+.hat-halloween {
+  display: none;
+}
+
+body[data-season="autumn"] .deco-autumn,
+body[data-season="halloween"] .deco-autumn,
+body[data-season="halloween"] .deco-halloween,
+body[data-season="halloween"] .hat-halloween {
+  display: inline;
+}
+
+/* Keibi-kun trades its security cap for a witch hat */
+body[data-season="halloween"] .robot-cap {
+  display: none;
+}
+
+body[data-season="halloween"] .garland-leaf:nth-child(3n + 2) { fill: #4a3f6b; }
+body[data-season="halloween"] .garland-leaf:nth-child(3n) { fill: #f28c28; }
+
+.leaf-fall {
+  animation: fall 14s linear infinite;
+}
+
+.leaf-sway {
+  animation: sway 3.5s ease-in-out infinite alternate;
+}
+
+/* bats flutter across the window, flapping fast */
+.bat {
+  animation: bat-fly 16s linear infinite;
+}
+
+.bat-wing {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bat-flap 0.3s ease-in-out infinite alternate;
+}
+
+@keyframes bat-fly {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(55px, -7px); }
+  50% { transform: translate(115px, 4px); }
+  75% { transform: translate(170px, -5px); }
+  100% { transform: translate(235px, 0); }
+}
+
+@keyframes bat-flap {
+  from { transform: scaleY(1); }
+  to { transform: scaleY(0.35); }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .leaf-fall,
+  .leaf-sway,
+  .bat,
+  .bat-wing,
   .plant-leaves,
   .dizzy-ring,
   .snot-bubble,

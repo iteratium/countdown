@@ -49,7 +49,7 @@ function makeCat(x, y) {
   const tail = svg("path", { d: "M-8 -6 Q-22 -6 -17 -22", fill: "none", stroke: INK, "stroke-width": 6, "stroke-linecap": "round" }, body);
   svg("path", { d: "M-8 -6 Q-22 -6 -17 -22", fill: "none", stroke: color, "stroke-width": 3, "stroke-linecap": "round" }, body);
   svg("ellipse", { cx: 0, cy: -7, rx: 9, ry: 8, fill: color, stroke: INK, "stroke-width": 1.5 }, body);
-  const face = makeHead(body, color);
+  const face = makeHead(body, color, true);
   const pawL = svg("ellipse", { cx: -5, cy: -2, rx: 3.5, ry: 2.5, fill: "#fff", stroke: INK, "stroke-width": 1.2 }, body);
   const pawR = svg("ellipse", { cx: 5, cy: -2, rx: 3.5, ry: 2.5, fill: "#fff", stroke: INK, "stroke-width": 1.2 }, body);
   const lunch = makeLunch(body);
@@ -64,8 +64,9 @@ function makeCat(x, y) {
 }
 
 // Round head with pointed ears, whiskers and pink cheeks, centred on (0, -22).
-// Used by the office cats and the progress-bar walker; returns the face.
-function makeHead(parent, color) {
+// Used by the office cats and the progress-bar walker; returns the face. Office cats
+// (withHat) also carry a witch hat that style.css only shows around Halloween.
+function makeHead(parent, color, withHat = false) {
   const outline = { stroke: INK, "stroke-width": 1.5, "stroke-linejoin": "round" };
   for (const s of [-1, 1]) {
     svg("path", { d: `M${s * 11} -25 L${s * 9} -36 Q${s * 8} -38.5 ${s * 6.2} -36.8 L${s * 1.5} -31 Z`, fill: color, ...outline }, parent);
@@ -78,7 +79,22 @@ function makeHead(parent, color) {
   }, parent);
   svg("ellipse", { cx: -7, cy: -18.2, rx: 1.9, ry: 1, fill: "#f08a8a", opacity: 0.55 }, parent);
   svg("ellipse", { cx: 7, cy: -18.2, rx: 1.9, ry: 1, fill: "#f08a8a", opacity: 0.55 }, parent);
-  return makeFace(parent);
+  const face = makeFace(parent);
+  if (withHat) makeWitchHat(parent);
+  return face;
+}
+
+function makeWitchHat(parent) {
+  const g = svg("g", { class: "hat-halloween" }, parent);
+  const line = { stroke: INK, "stroke-width": 1.2, "stroke-linejoin": "round" };
+  svg("ellipse", { cx: 0, cy: -32, rx: 11.5, ry: 2.6, fill: "#3d3358", ...line }, g);
+  svg("path", { d: "M-6.5 -32.5 Q-4 -40 2 -43 Q4.5 -44.5 5.5 -42.5 Q3 -41 4 -37.5 L6.5 -32.5 Z", fill: "#4a3f6b", ...line }, g);
+  svg("path", { d: "M-5.8 -35.5 Q0 -33.5 5.8 -35.5 L6.5 -32.5 Q0 -30.8 -6.5 -32.5 Z", fill: "#f4a259", ...line, "stroke-width": 0.8 }, g);
+}
+
+// A witch hat is taller than the ears, so bubbles above a cat's head sit higher then.
+function hatLift() {
+  return document.body.dataset.season === "halloween" ? 8 : 0;
 }
 
 // Doodle expressions: each is its own group of a few bold strokes (eyes, mouth and small
@@ -554,11 +570,88 @@ function addCat(x, y) {
 function removeCat(cat) {
   leavePlace(cat);
   cat.root.remove();
+  if (cat.speech) cat.speech.g.remove();
   cats.splice(cats.indexOf(cat), 1);
+}
+
+// Click a cat and it says something that fits what it is doing. Lines and names come
+// from cats.json; a line may have two rows, split by "\n". Speech lives in its own layer
+// above every cat so a bubble is never hidden behind a cat in front.
+const speechLayer = svg("g", { "pointer-events": "none" });
+catsLayer.after(speechLayer);
+let catData = null;
+fetch("cats.json").then((res) => res.json()).then((data) => { catData = data; }).catch(() => {});
+
+function pickName() {
+  const all = catData ? catData.names : ["Mochi"];
+  const used = new Set(cats.map((cat) => cat.name));
+  const free = all.filter((name) => !used.has(name));
+  return pickOne(free.length ? free : all);
+}
+
+function pickLine(cat) {
+  let pool = null;
+  if (catData) {
+    const { state } = cat;
+    let key = "wander";
+    if (cat.leaving) key = "leaving";
+    else if (cat.scolded) key = "scolded";
+    else if (cat.dizzy > 0) key = "dizzy";
+    else if (state === "coffee" || state === "meet" || state === "lunch") key = state;
+    else if (guardOnDuty()) key = "late";
+    else if (officeClosed()) key = "weekend";
+    else if (state === "work") key = "work";
+    pool = key === "work" ? catData.work[document.body.dataset.mood] : catData[key];
+  }
+  const fresh = (pool || ["Meow!"]).filter((line) => line !== cat.lastLine);
+  cat.lastLine = pickOne(fresh.length ? fresh : pool || ["Meow!"]);
+  return cat.lastLine;
+}
+
+function talk(cat) {
+  cat.name ??= pickName();
+  const rows = pickLine(cat).split("\n");
+  const sp = cat.speech || (cat.speech = { g: svg("g", {}, speechLayer) });
+  const w = Math.max(cat.name.length * 0.85, ...rows.map((row) => row.length)) * 3.1 + 9;
+  const h = 11 + rows.length * 7;
+  const line = { stroke: INK, "stroke-width": 1.2, "stroke-linejoin": "round" };
+  const font = { "text-anchor": "middle", "font-weight": 700, "font-family": "Fredoka, system-ui, sans-serif" };
+  sp.g.replaceChildren();
+  sp.w = w;
+  sp.age = 0;
+  sp.dur = 2.6 + rows.join("").length * 0.05;
+  svg("path", { d: "M-2.4 -5 L0 0 L2.4 -5 Z", fill: "#fff", ...line }, sp.g);
+  sp.box = svg("g", {}, sp.g);
+  svg("rect", { x: -w / 2, y: -5 - h, width: w, height: h, rx: 3.5, fill: "#fff", ...line }, sp.box);
+  svg("text", { x: 0, y: 1.5 - h, "font-size": 4.3, fill: "#e07a5f", ...font }, sp.box).textContent = cat.name;
+  rows.forEach((row, i) => {
+    svg("text", { x: 0, y: 1.5 - h + 7 * (i + 1), "font-size": 5.6, fill: INK, ...font }, sp.box).textContent = row;
+  });
+  svg("rect", { x: -1.8, y: -5.6, width: 3.6, height: 1.4, fill: "#fff" }, sp.g);
+}
+
+// Follow the cat, pop in, and slide sideways when the bubble would leave the room.
+function updateSpeech(cat, bob, dt) {
+  const sp = cat.speech;
+  if (!sp || !sp.box) return;
+  sp.age += dt;
+  if (sp.age > sp.dur) {
+    sp.g.replaceChildren();
+    sp.box = null;
+    return;
+  }
+  const p = reduceMotion ? 1 : Math.min(1, sp.age / 0.2);
+  const pop = 1 + 2.7 * (p - 1) ** 3 + 1.7 * (p - 1) ** 2; // ease-out-back
+  const half = sp.w / 2;
+  const dx = Math.min(half - 5, Math.max(5 - half, Math.min(317 - cat.x - half, Math.max(-37 - cat.x + half, 0))));
+  sp.box.setAttribute("transform", `translate(${dx.toFixed(1)} 0)`);
+  sp.g.setAttribute("transform", `translate(${cat.x.toFixed(1)} ${(cat.y + bob - 40 - hatLift()).toFixed(1)}) scale(${pop.toFixed(2)})`);
 }
 
 function updateBubble(cat, dt, t) {
   const bubble = cat.bubble;
+  // the icon bubble steps aside while the cat talks
+  bubble.g.setAttribute("display", cat.speech && cat.speech.box ? "none" : "inline");
   let key = "";
   if (cat.leaving) key = "home";
   else if (cat.state === "coffee" || cat.state === "meet") key = cat.state;
@@ -574,7 +667,7 @@ function updateBubble(cat, dt, t) {
   bubble.age += dt;
   const p = reduceMotion ? 1 : Math.min(1, bubble.age / 0.25);
   const pop = 1 + 2.7 * (p - 1) ** 3 + 1.7 * (p - 1) ** 2; // ease-out-back
-  bubble.g.setAttribute("transform", `translate(0 -47) scale(${pop.toFixed(2)})`);
+  bubble.g.setAttribute("transform", `translate(0 ${-47 - hatLift()}) scale(${pop.toFixed(2)})`);
 
   if (key === "meet") {
     const active = Math.floor(t * 3 + cat.phase) % 3;
@@ -689,6 +782,7 @@ function updateCat(cat, dt, t) {
   updateLunch(cat, t);
 
   updateBubble(cat, dt, t);
+  updateSpeech(cat, bob, dt);
 
   setExpression(cat, pickExpression(cat));
   const blink = Math.sin(t * 0.9 + cat.phase * 3) > 0.985;
@@ -745,10 +839,23 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 
+// The frontmost cat under the click, with a little slack so small screens can still hit one.
+function catAt(x, y) {
+  let hit = null;
+  for (const cat of cats) {
+    if (Math.abs(x - cat.x) > 16 || y < cat.y - 44 - hatLift() || y > cat.y + 6) continue;
+    if (!hit || cat.y > hit.y) hit = cat;
+  }
+  return hit;
+}
+
+// Clicking a cat makes it talk; clicking anywhere else hires a new one.
 function spawnFromEvent(event) {
   const rect = sceneEl.getBoundingClientRect();
   const x = -40 + ((event.clientX - rect.left) / rect.width) * 360;
   const y = ((event.clientY - rect.top) / rect.height) * 180;
+  const cat = catAt(x, y);
+  if (cat) return talk(cat);
   addCat(
     Math.min(FLOOR.maxX, Math.max(FLOOR.minX, x)),
     Math.min(FLOOR.maxY, Math.max(FLOOR.minY, y))

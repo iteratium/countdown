@@ -25,6 +25,9 @@ the workday is to being over. Goal: simple and fast, like `profile`.
 - `style.css` — layout/styling, sky/weather states keyed off `data-sky` and
   `data-weather`, Friday-night confetti animation
 - `quotes.json` — mood-matched quotes, keyed by mood stage
+- `cats.json` — cat names and the one/two-row lines a cat says when clicked, keyed
+  by what it is doing (`work` is further keyed by mood stage). `office.js` loads it
+  (`talk()`); clicking a cat talks, clicking anywhere else hires a cat.
 - `script.js` — countdown/mood logic (9am start, 6pm target, weekends,
   lunch 12–1, off-clock state, Friday-evening confetti), quote picking. Sets
   `data-clock`, `data-mood` and `data-lunch` on `<body>` for the office.
@@ -38,6 +41,14 @@ the workday is to being over. Goal: simple and fast, like `profile`.
   Open-Meteo every 15 min. Sets `data-sky` and `data-weather` on `<body>`
   and writes "Tokyo 29°C, clear" into the clock line under the countdown;
   `?sky=…&weather=…` previews a state. Loads after `office.js` (uses `svg()`).
+- `season.js` — seasonal decor: sets `data-season` on `<body>` (`autumn` Sep–Nov,
+  `halloween` Oct 24–31; `?season=…` previews) and draws the maple garland and
+  falling leaves. The rest of the decor (cobwebs, pumpkins, bats, cat and Keibi-kun witch hats, and the meeting room
+  bunting/ghosts/spider/candy) is
+  in `index.html`/`office.js` and shown by `style.css` off `data-season`. Loads
+  after `sky.js` (uses `svg()`, `WIN`, `rand`, `preview`). The maple leaf shape
+  (`#maple`, `#maple-veins`) is defined once in `index.html`'s `<defs>`; the office
+  plant (a potted maple), the garland and the falling leaves all `<use>` it.
 - `guard.js` — Keibi-kun, the security-guard robot. After 6 PM on workdays
   (`guardOnDuty()` in `office.js`) cats keep working late; the robot rolls in,
   sends each one home, then patrols (flashlight at night) and turns the office

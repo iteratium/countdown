@@ -1,7 +1,7 @@
 // Keibi-kun, the security-guard robot (keibi = "security guard"). After hours on workdays it rolls in from the left, sends any
 // cats still working home, says goodbye, then patrols. At night it carries a flashlight,
 // and once the office is empty it turns the lights off. Uses office.js globals (svg, INK,
-// cats, catsLayer, goHome, FLOOR, inMeetingRoom, MEETING_DOOR, guardOnDuty, reduceMotion).
+// cats, catsLayer, goHome, FLOOR, inMeetingRoom, MEETING_DOOR, guardOnDuty, hatLift, reduceMotion).
 const GUARD_SCALE = 0.72;
 const GUARD_SPEED = 26;
 const GUARD_DOOR = { x: -64, y: 162 };
@@ -86,11 +86,17 @@ function drawRobot(parent) {
     }
   }
 
-  // peaked security cap with a gold badge
-  el("path", { d: "M-10 -66 Q-11.5 -74 -3 -75 H3 Q11.5 -74 10 -66 Z", fill: ROBOT.cap });
-  el("rect", { x: -10.2, y: -68.4, width: 20.4, height: 2.6, fill: ROBOT.dark, "stroke-width": 1 });
-  el("path", { d: "M-9.5 -66 Q0 -63.4 9.5 -66 L10.5 -64.8 Q0 -61.2 -10.5 -64.8 Z", fill: INK });
-  el("circle", { cx: 0, cy: -71, r: 1.5, fill: ROBOT.gold, "stroke-width": 0.8 });
+  // peaked security cap with a gold badge; at Halloween (style.css) it swaps for a witch hat with a gold buckle
+  const cap = svg("g", { class: "robot-cap" }, parent);
+  el("path", { d: "M-10 -66 Q-11.5 -74 -3 -75 H3 Q11.5 -74 10 -66 Z", fill: ROBOT.cap }, cap);
+  el("rect", { x: -10.2, y: -68.4, width: 20.4, height: 2.6, fill: ROBOT.dark, "stroke-width": 1 }, cap);
+  el("path", { d: "M-9.5 -66 Q0 -63.4 9.5 -66 L10.5 -64.8 Q0 -61.2 -10.5 -64.8 Z", fill: INK }, cap);
+  el("circle", { cx: 0, cy: -71, r: 1.5, fill: ROBOT.gold, "stroke-width": 0.8 }, cap);
+  const hat = svg("g", { class: "hat-halloween" }, parent);
+  el("ellipse", { cx: 0, cy: -67, rx: 13.5, ry: 3.2, fill: "#3d3358" }, hat);
+  el("path", { d: "M-8 -67.5 Q-5 -80 1 -86 Q4 -89 6 -86.5 Q3.5 -85 4.7 -79.5 L8 -67.5 Z", fill: "#4a3f6b" }, hat);
+  el("path", { d: "M-7.2 -72.5 Q0 -70 7.2 -72.5 L8 -67.5 Q0 -65.2 -8 -67.5 Z", fill: "#f4a259", "stroke-width": 1 }, hat);
+  el("rect", { x: -1.7, y: -70.6, width: 3.4, height: 3.4, rx: 0.6, fill: ROBOT.gold, "stroke-width": 0.8 }, hat);
 
   return {
     setEyes(name) {
@@ -135,7 +141,7 @@ function say(text, hold = 0) {
   if (text === guard.text) return;
   guard.text = text;
   guard.bubble.replaceChildren();
-  if (text) drawSpeech(guard.bubble, 0, -88, text);
+  if (text) drawSpeech(guard.bubble, 0, -88 - hatLift(), text); // the witch hat is taller than the cap
 }
 
 // Route to a point, going through the meeting-room door if it is on the other side of the glass.

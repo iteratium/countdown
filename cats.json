@@ -1,0 +1,97 @@
+{
+  "names": [
+    "Mochi", "Miso", "Tofu", "Nori", "Yuzu", "Matcha", "Sushi", "Taiyaki", "Dango", "Ramen",
+    "Udon", "Onigiri", "Azuki", "Kinako", "Momo", "Sora", "Hana", "Kuro", "Shiro", "Tama"
+  ],
+  "work": {
+    "stage-0": [
+      "Is it Friday yet?",
+      "Coffee first.\nThen feelings.",
+      "Eyes open.\nBrain: loading.",
+      "So many emails,\nso little me.",
+      "*yawns*\nJust five more minutes"
+    ],
+    "stage-1": [
+      "Another meeting\nthat could be an email.",
+      "Please stop\nreplying all.",
+      "My keyboard\nis judging me.",
+      "Six PM feels\nvery far away.",
+      "I have opinions\nabout this spreadsheet."
+    ],
+    "stage-2": [
+      "Halfway there!\nProbably.",
+      "Sending the report.\nFingers crossed.",
+      "Deep breaths.\nWe can do this.",
+      "Snack o'clock\ncannot come soon enough.",
+      "Look busy,\nthe boss is near."
+    ],
+    "stage-3": [
+      "I can see\nthe finish line!",
+      "Almost home,\nalmost home...",
+      "Typing at\nmaximum speed.",
+      "Tonight: sofa,\nsnacks, zero emails.",
+      "Just one more\nspreadsheet."
+    ],
+    "stage-4": [
+      "Freedom is\nright there!",
+      "Bags half packed.\nDon't tell anyone.",
+      "I can smell\nthe weekend.",
+      "Sixty minutes.\nSixty little minutes.",
+      "Hello, sofa.\nMiss you already."
+    ]
+  },
+  "coffee": [
+    "Coffee is\nmy love language.",
+    "This is my third.\nDon't judge.",
+    "Espresso now,\nproductivity later.",
+    "Meet me at\nthe machine."
+  ],
+  "meet": [
+    "Let's circle back.",
+    "Can everyone see\nmy screen?",
+    "You're on mute!",
+    "This meeting\nis my nap time.",
+    "Per my last\nemail...meow."
+  ],
+  "lunch": [
+    "Itadakimasu!",
+    "Rice is life.",
+    "Chopsticks:\nexpert level.",
+    "Lunch break:\nthe best meeting."
+  ],
+  "dizzy": [
+    "Whoa, room's\nspinning...",
+    "So many slides...",
+    "Was that\nan agenda item?"
+  ],
+  "wander": [
+    "Just stretching\nmy paws.",
+    "I'm not lost,\nI'm exploring.",
+    "Walking meeting?\nSure.",
+    "Looking for\nmy stapler.",
+    "Nice to meet you!\nI'm hired, right?"
+  ],
+  "weekend": [
+    "Weekend visit!\nNo work, only vibes.",
+    "The office is\nso quiet today.",
+    "Don't tell anyone\nI stopped by.",
+    "Just checking\nthe coffee machine."
+  ],
+  "late": [
+    "Just five more\nminutes, promise.",
+    "Working late\nagain...",
+    "Is that\nKeibi-kun?",
+    "I'll go home\nafter this email."
+  ],
+  "scolded": [
+    "Sorry, going\nhome now!",
+    "Yes sir!\nHeading out!",
+    "Eek! Caught!"
+  ],
+  "leaving": [
+    "Otsukaresama\ndeshita!",
+    "See you\ntomorrow!",
+    "Home time!\nBye bye!",
+    "Free at last!"
+  ]
+}
