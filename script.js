@@ -244,7 +244,7 @@ aboutEl.addEventListener("click", (event) => {
   if (event.target === aboutEl) aboutEl.close();
 });
 
-fetch("quotes.json").then((res) => res.json()).then((quotesData) => {
+fetch("quotes.json", { cache: "no-cache" }).then((res) => res.json()).then((quotesData) => {
   quotes = quotesData;
   tick();
   setInterval(tick, 1000);

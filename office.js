@@ -651,7 +651,7 @@ function removeCat(cat) {
 const speechLayer = svg("g", { "pointer-events": "none" });
 catsLayer.after(speechLayer);
 let catData = null;
-fetch("cats.json").then((res) => res.json()).then((data) => { catData = data; }).catch(() => {});
+fetch("cats.json", { cache: "no-cache" }).then((res) => res.json()).then((data) => { catData = data; }).catch(() => {});
 
 function pickName() {
   const all = Object.keys(PERSONAS);

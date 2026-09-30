@@ -64,3 +64,14 @@ the workday is to being over. Goal: simple and fast, like `profile`.
 ## Deployment
 
 GitHub Pages, deployed from `main`, root directory. No build step.
+
+## Caching
+
+Pages sends `cache-control: max-age=600` on every file and that can't be changed, so a
+visitor could get new HTML with old CSS/JS. To avoid that, `index.html` loads
+`style.css` and the scripts as `file?v=<hash of the file>`. **Run `./release.sh`
+before committing any change to `style.css` or a `.js` file** (it rewrites those
+numbers, and does nothing if nothing changed), and commit the updated `index.html`
+with it. `quotes.json` and `cats.json` are fetched with `cache: "no-cache"`, so they
+need nothing. A new `index.html` can still take up to 10 minutes to reach a visitor.
+If you add a new `.js`/`.css` file, add it to the list in `release.sh`.
