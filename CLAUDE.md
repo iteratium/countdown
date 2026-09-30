@@ -42,7 +42,7 @@ the workday is to being over. Goal: simple and fast, like `profile`.
   and writes "Tokyo 29°C, clear" into the clock line under the countdown;
   `?sky=…&weather=…` previews a state. Loads after `office.js` (uses `svg()`).
 - `season.js` — seasonal decor: sets `data-season` on `<body>` (`autumn` Sep–Nov,
-  `halloween` Oct 24–31; `?season=…` previews) and draws the maple garland and
+  `halloween` Sep 25–Oct 31; `?season=…` previews) and draws the maple garland and
   falling leaves. The rest of the decor (cobwebs, pumpkins, bats, cat and Keibi-kun witch hats, and the meeting room
   bunting/ghosts/spider/candy) is
   in `index.html`/`office.js` and shown by `style.css` off `data-season`. Loads

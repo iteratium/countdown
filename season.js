@@ -7,7 +7,8 @@ const LEAF_COLORS = ["#e07a5f", "#f4a259", "#c8553d", "#f2cc8f"];
 
 function currentSeason(now) {
   const month = now.getMonth() + 1;
-  if (month === 10 && now.getDate() >= 24) return "halloween";
+  // Halloween decor starts in late September, as it does in Japan
+  if ((month === 9 && now.getDate() >= 25) || month === 10) return "halloween";
   return month >= 9 && month <= 11 ? "autumn" : "";
 }
 
