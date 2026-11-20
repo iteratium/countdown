@@ -35,6 +35,19 @@
     ],
     "scolded": [
      "Yes! Going!\nTaking my mug."
+    ],
+    "christmas": [
+     "Eggnog is just\nlatte's cousin.",
+     "Peppermint mocha?\nI'm already vibrating."
+    ],
+    "winter": [
+     "Cold outside.\nHot coffee. Perfect."
+    ],
+    "present": [
+     "Is any of this\nespresso beans?"
+    ],
+    "cocoa": [
+     "Cocoa? Fine.\nBut with espresso."
     ]
    }
   },
@@ -74,6 +87,19 @@
     "scolded": [
      "I was leaving!\nRude.",
      "Don't rush me,\nrobot."
+    ],
+    "christmas": [
+     "Tinsel in my fur.\nI see everything.",
+     "Bah. ...Nice lights\nthough. Don't tell."
+    ],
+    "winter": [
+     "Winter. Good.\nFewer people out."
+    ],
+    "present": [
+     "None of these\nare for me. Rude."
+    ],
+    "cocoa": [
+     "Too sweet.\n...Pour me another."
     ]
    }
   },
@@ -112,6 +138,19 @@
     ],
     "scolded": [
      "Huh? Oh!\nGoing home!"
+    ],
+    "christmas": [
+     "Napping under\nthe twinkly lights.",
+     "The tree is\nvery cozy. Zzz."
+    ],
+    "winter": [
+     "Blanket weather.\nNap weather."
+    ],
+    "present": [
+     "I'll just sit on\nthis one. Zzz."
+    ],
+    "cocoa": [
+     "Warm mug.\nNap incoming."
     ]
    }
   },
@@ -150,6 +189,19 @@
     ],
     "scolded": [
      "Let me just\nsave first!"
+    ],
+    "christmas": [
+     "Gift list sorted.\nPivot table: naughty.",
+     "Santa's route:\noptimised. I checked."
+    ],
+    "winter": [
+     "Q1 forecast:\ncold and cozy."
+    ],
+    "present": [
+     "Nine boxes.\nI counted. Twice."
+    ],
+    "cocoa": [
+     "Marshmallow count:\n2. Optimal."
     ]
    }
   },
@@ -189,6 +241,19 @@
     ],
     "scolded": [
      "Noted. Actioning\nnow!"
+    ],
+    "christmas": [
+     "Holiday party\nplanning. Again.",
+     "Circling back on\nthe gift exchange."
+    ],
+    "winter": [
+     "Let's take this\nsomewhere warmer."
+    ],
+    "present": [
+     "Quick sync on\nwho wrapped these?"
+    ],
+    "cocoa": [
+     "Cocoa break.\nNo agenda. Bliss."
     ]
    }
   },
@@ -227,6 +292,19 @@
     ],
     "scolded": [
      "A robot teaches\nme humility."
+    ],
+    "christmas": [
+     "Peace on earth,\nand on my desk.",
+     "The tree stands\nstill. So do I."
+    ],
+    "winter": [
+     "Snow falls.\nI breathe."
+    ],
+    "present": [
+     "To open, or not\nto open. Both fine."
+    ],
+    "cocoa": [
+     "Hot cocoa.\nSteam. Stillness."
     ]
    }
   },
@@ -265,6 +343,19 @@
     ],
     "scolded": [
      "Only if\nthere's dinner!"
+    ],
+    "christmas": [
+     "Is there turkey?\nAsking for me.",
+     "Cookies for Santa?\nI'll test them first."
+    ],
+    "winter": [
+     "Hot taiyaki\nweather. Yes please."
+    ],
+    "present": [
+     "Please be food.\nPlease be food."
+    ],
+    "cocoa": [
+     "More marshmallows.\nPlease. Thanks."
     ]
    }
   },
@@ -303,6 +394,19 @@
     ],
     "scolded": [
      "Who told\nthe robot?!"
+    ],
+    "christmas": [
+     "Psst, someone peeked\nat their present.",
+     "I know who got\nwhat. Don't ask."
+    ],
+    "winter": [
+     "Cold out there.\nHot gossip in here."
+    ],
+    "present": [
+     "Whose is the big\nred one? Spill."
+    ],
+    "cocoa": [
+     "Spilled cocoa.\nAlso some gossip."
     ]
    }
   },
@@ -341,6 +445,19 @@
     ],
     "scolded": [
      "But I'm just\nwarming up!"
+    ],
+    "christmas": [
+     "Santa and I both\nwork nights.",
+     "Up all night\nwatching the lights."
+    ],
+    "winter": [
+     "Long nights.\nMy season at last."
+    ],
+    "present": [
+     "Opening at\nmidnight. Obviously."
+    ],
+    "cocoa": [
+     "Cocoa at 3 AM.\nPerfectly normal."
     ]
    }
   },
@@ -379,6 +496,19 @@
     ],
     "scolded": [
      "Okay, okay!\nHeading home..."
+    ],
+    "christmas": [
+     "Daydreaming of\nsnowy rooftops.",
+     "Wish upon\nthat tree star."
+    ],
+    "winter": [
+     "Staring at the\nsnow. Forever."
+    ],
+    "present": [
+     "What's inside?\nI'll imagine it."
+    ],
+    "cocoa": [
+     "The steam looks\nlike little clouds."
     ]
    }
   },
@@ -417,6 +547,19 @@
     ],
     "scolded": [
      "Fine.\nBut I'll be back."
+    ],
+    "christmas": [
+     "I was here\nbefore the tree.",
+     "I know what's in\nthe boxes. Shh."
+    ],
+    "winter": [
+     "I like the cold.\nIt likes me."
+    ],
+    "present": [
+     "These were not\nhere yesterday."
+    ],
+    "cocoa": [
+     "I don't like\nsweet things. ...Mm."
     ]
    }
   },
@@ -455,6 +598,19 @@
     ],
     "scolded": [
      "Aw, okay!\nGoing home!"
+    ],
+    "christmas": [
+     "Merry everything!\nYou're all great!",
+     "Best. Tree. Ever.\nGo team!"
+    ],
+    "winter": [
+     "Cold paws,\nwarm hearts!"
+    ],
+    "present": [
+     "Presents! For\neveryone! Yay!"
+    ],
+    "cocoa": [
+     "Cocoa time!\nEveryone cheers!"
     ]
    }
   }
@@ -550,6 +706,43 @@
    "See you\ntomorrow!",
    "Home time!\nBye bye!",
    "Free at last!"
+  ],
+  "christmas": [
+   "Merry Christmas,\neveryone!",
+   "Jingle bells,\nmeow meow meow.",
+   "Who's on the\nnice list? Not me.",
+   "Is the tree real?\nAsking for claws.",
+   "Scarf: on. Hat: on.\nReady."
+  ],
+  "winter": [
+   "Scarf weather,\nfinally.",
+   "My whiskers\nare cold.",
+   "Warm spot by the\nwindow? Taken.",
+   "Snow again.\nI'm staying in."
+  ],
+  "present": [
+   "Shake it.\nIt rattles. Treat?",
+   "Who wrapped these?\nI'm sitting on them.",
+   "No peeking.\n...Just a little.",
+   "Box: acquired.\nI live here now."
+  ],
+  "tree": [
+   "Is it climbable?\nAsking for science.",
+   "Timber!\n...Sorry!",
+   "Just checking if\nthe star is real.",
+   "Climbing the tree.\nDon't tell Keibi-kun."
+  ],
+  "cocoa": [
+   "Hot cocoa with\nextra marshmallows.",
+   "Careful! It's hot.\n...Ow.",
+   "Cocoa: now with\nmarshmallows.",
+   "Warm paws.\nHappy heart."
+  ],
+  "gifted": [
+   "A present for me?!\nThank you, Keibi-kun!",
+   "Aww! I'll open it\nat home. Promise.",
+   "Best guard ever.\nMerry Christmas!",
+   "Keibi-kun, you\nsoftie. Thanks!"
   ]
  }
 }

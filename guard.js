@@ -97,8 +97,18 @@ function drawRobot(parent) {
   el("path", { d: "M-8 -67.5 Q-5 -80 1 -86 Q4 -89 6 -86.5 Q3.5 -85 4.7 -79.5 L8 -67.5 Z", fill: "#4a3f6b" }, hat);
   el("path", { d: "M-7.2 -72.5 Q0 -70 7.2 -72.5 L8 -67.5 Q0 -65.2 -8 -67.5 Z", fill: "#f4a259", "stroke-width": 1 }, hat);
   el("rect", { x: -1.7, y: -70.6, width: 3.4, height: 3.4, rx: 0.6, fill: ROBOT.gold, "stroke-width": 0.8 }, hat);
+  // at Christmas it wears the cats' Santa hat instead, scaled up to sit on its head
+  makeSantaHat(parent).setAttribute("transform", "translate(0 -31.8) scale(1.1)");
+
+  // at Christmas it holds a present out to each late cat before sending it home
+  const gift = makeGiftBox(parent);
+  gift.setAttribute("transform", "translate(-14 -28) scale(1.3)");
+  gift.setAttribute("display", "none");
 
   return {
+    setGift(on) {
+      gift.setAttribute("display", on ? "inline" : "none");
+    },
     setEyes(name) {
       for (const [key, set] of Object.entries(eyeSets)) set.setAttribute("display", key === name ? "inline" : "none");
     },
@@ -141,7 +151,7 @@ function say(text, hold = 0) {
   if (text === guard.text) return;
   guard.text = text;
   guard.bubble.replaceChildren();
-  if (text) drawSpeech(guard.bubble, 0, -88 - hatLift(), text); // the witch hat is taller than the cap
+  if (text) drawSpeech(guard.bubble, 0, -88 - hatLift(), text); // the seasonal hats are taller than the cap
 }
 
 // Route to a point, going through the meeting-room door if it is on the other side of the glass.
@@ -205,6 +215,21 @@ function chase(cat) {
   setGoal(besideCat(cat));
 }
 
+// Send the scolded (or gifted) cat home, then chase the next late cat or say goodbye.
+function sendHome() {
+  const cat = guard.target;
+  if (cats.includes(cat)) goHome(cat);
+  guard.target = null;
+  const next = lateCats();
+  if (next.length) chase(next[0]);
+  else {
+    guard.state = "goodbye";
+    guard.timer = 2.6;
+    guard.bot.setEyes("happy");
+    say("Otsukaresama!");
+  }
+}
+
 let guardLast = performance.now();
 function guardFrame(now) {
   const dt = Math.min(0.1, (now - guardLast) / 1000);
@@ -221,6 +246,7 @@ function guardFrame(now) {
     setGoal(patrolPoint());
   } else if (guard.state !== "away" && guard.state !== "leave" && !onDuty) {
     guard.state = "leave";
+    guard.bot.setGift(false);
     guard.bot.setEyes("happy");
     say(null);
     setGoal(GUARD_DOOR);
@@ -256,16 +282,25 @@ function guardFrame(now) {
     if (guard.timer <= 0) {
       const cat = guard.target;
       cat.scolded = false;
-      if (cats.includes(cat)) goHome(cat);
-      guard.target = null;
-      const next = lateCats();
-      if (next.length) chase(next[0]);
-      else {
-        guard.state = "goodbye";
-        guard.timer = 2.6;
+      if (cats.includes(cat) && document.body.dataset.season === "christmas") {
+        // Christmas: a present first, then off home
+        guard.state = "gift";
+        guard.timer = 2.2;
         guard.bot.setEyes("happy");
-        say("Otsukaresama!");
+        guard.bot.setGift(true);
+        say("Merry Christmas!");
+      } else sendHome();
+    }
+  } else if (guard.state === "gift") {
+    guard.timer -= dt;
+    if (guard.timer <= 0) {
+      guard.bot.setGift(false);
+      const cat = guard.target;
+      if (cats.includes(cat)) {
+        cat.gifted = true;
+        talk(cat);
       }
+      sendHome();
     }
   } else if (guard.state === "goodbye") {
     guard.timer -= dt;

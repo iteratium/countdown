@@ -89,8 +89,9 @@ main {
   border-radius: 4px;
 }
 
-/* the "How it works" pop-up, styled like the quote card */
-#about {
+/* the "How it works" and "Scenes" pop-ups, styled like the quote card */
+#about,
+#scenes {
   width: min(42rem, calc(100vw - 2rem));
   max-height: min(85dvh, 52rem);
   padding: 0;
@@ -101,7 +102,8 @@ main {
   box-shadow: 6px 6px 0 var(--accent);
 }
 
-#about::backdrop {
+#about::backdrop,
+#scenes::backdrop {
   background: rgb(46 43 63 / 0.5);
 }
 
@@ -182,9 +184,100 @@ main {
   text-underline-offset: 0.2em;
 }
 
-.about-try {
+/* a link inside the About text that opens the Scenes pop-up */
+.about-inline {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+
+/* the Scenes pop-up: a grid of cards, each a link that previews one scene */
+.scene-grid {
   list-style: none;
   padding-left: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 0.6rem;
+  margin: 0.6rem 0 0.2rem;
+}
+
+.about-body .scene-grid {
+  padding-left: 0;
+}
+
+.about-body .scene-grid li {
+  margin: 0;
+}
+
+.about-body a.scene {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.65rem;
+  align-items: center;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 0.7rem;
+  border: 3px solid var(--line);
+  border-radius: 0.8rem;
+  background: color-mix(in srgb, var(--tint, var(--accent)) 28%, var(--card));
+  text-decoration: none;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.about-body a.scene:hover,
+.about-body a.scene:focus-visible {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--line);
+}
+
+.about-body a.scene[aria-current="page"] {
+  border-color: var(--tint, var(--accent));
+  box-shadow: 3px 3px 0 var(--tint, var(--accent));
+}
+
+.about-body a.scene[aria-current="page"]::after {
+  content: "viewing";
+  position: absolute;
+  top: 0.3rem;
+  right: 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.6;
+}
+
+.scene-emoji {
+  grid-row: span 2;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.scene-name {
+  font-family: "Fredoka", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 700;
+  font-size: 0.98rem;
+  line-height: 1.2;
+}
+
+.scene-desc {
+  font-size: 0.8rem;
+  line-height: 1.3;
+  opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-body a.scene {
+    transition: none;
+  }
 }
 
 .hint .mouse,
@@ -250,6 +343,18 @@ h1 {
   justify-content: center;
   align-items: baseline;
   gap: 0 0.6rem;
+}
+
+/* Christmas countdown, shown under the clock through December 25 */
+#xmas-count {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #b8453f;
+  margin: 0.25rem 0 0;
+}
+
+#xmas-count[hidden] {
+  display: none;
 }
 
 #until {
@@ -901,24 +1006,131 @@ body[data-weather="storm"] .bolt {
 /* seasonal decor: hidden until season.js sets <body data-season> */
 .deco-autumn,
 .deco-halloween,
-.hat-halloween {
+.deco-winter,
+.plant-tree,
+.scarf,
+.hat-halloween,
+.hat-christmas {
   display: none;
 }
 
 body[data-season="autumn"] .deco-autumn,
 body[data-season="halloween"] .deco-autumn,
 body[data-season="halloween"] .deco-halloween,
-body[data-season="halloween"] .hat-halloween {
+body[data-season="halloween"] .hat-halloween,
+body[data-season="winter"] .deco-winter,
+body[data-season="christmas"] .deco-winter,
+body[data-season="christmas"] .hat-christmas,
+body[data-season="winter"] .plant-tree,
+body[data-season="christmas"] .plant-tree,
+body[data-season="winter"] .scarf,
+body[data-season="christmas"] .scarf {
   display: inline;
 }
 
-/* Keibi-kun trades its security cap for a witch hat */
-body[data-season="halloween"] .robot-cap {
+/* a cat's visit: a poked present hops, a climbed tree shakes (office.js adds .wiggle) */
+.present {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.present.wiggle {
+  animation: present-hop 0.7s ease-out;
+}
+
+.tree-body {
+  transform-box: view-box;
+  transform-origin: 21px 64px;
+}
+
+.tree-body.wiggle {
+  animation: tree-shake 1.1s ease-in-out;
+}
+
+@keyframes present-hop {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  20% { transform: translateY(-2.5px) rotate(-6deg); }
+  45% { transform: translateY(0) rotate(5deg); }
+  65% { transform: translateY(-1px) rotate(-3deg); }
+}
+
+@keyframes tree-shake {
+  0%, 100% { transform: rotate(0); }
+  15% { transform: rotate(-4deg); }
+  35% { transform: rotate(4deg); }
+  55% { transform: rotate(-3deg); }
+  75% { transform: rotate(2deg); }
+}
+
+/* the houseplant makes way for the Christmas tree */
+body[data-season="winter"] .plant-green,
+body[data-season="christmas"] .plant-green {
+  display: none;
+}
+
+/* Keibi-kun trades its security cap for a witch hat, or a Santa hat at Christmas */
+body[data-season="halloween"] .robot-cap,
+body[data-season="christmas"] .robot-cap {
   display: none;
 }
 
 body[data-season="halloween"] .garland-leaf:nth-child(3n + 2) { fill: #4a3f6b; }
 body[data-season="halloween"] .garland-leaf:nth-child(3n) { fill: #f28c28; }
+
+/* string lights twinkle, each bulb out of step (delay set in season.js) */
+.light-bulb {
+  animation: twinkle 1.8s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+
+/* click the tree's star: it pulses, sparkles fly and the lights chase for a few seconds
+   (office.js adds .twinkling to the tree and .chase to #lights) */
+.tree-star {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.twinkling .tree-star {
+  animation: star-pulse 0.5s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 1.5px #fff3b0);
+}
+
+.sparkle {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.twinkling .sparkle {
+  animation: sparkle 1.2s ease-out infinite;
+  animation-delay: var(--sd, 0s);
+}
+
+#lights.chase .light-bulb {
+  animation: bulb-chase 1.1s linear infinite;
+  animation-delay: calc(var(--i) * -0.08s);
+}
+
+@keyframes star-pulse {
+  from { transform: scale(1) rotate(-6deg); }
+  to { transform: scale(1.35) rotate(6deg); }
+}
+
+@keyframes sparkle {
+  0% { opacity: 0; transform: scale(0); }
+  30% { opacity: 1; transform: scale(1.2) rotate(45deg); }
+  100% { opacity: 0; transform: scale(0.2) rotate(90deg); }
+}
+
+@keyframes bulb-chase {
+  0%, 25% { opacity: 1; }
+  55%, 100% { opacity: 0.2; }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
 
 .leaf-fall {
   animation: fall 14s linear infinite;
@@ -939,6 +1151,22 @@ body[data-season="halloween"] .garland-leaf:nth-child(3n) { fill: #f28c28; }
   animation: bat-flap 0.3s ease-in-out infinite alternate;
 }
 
+/* the far-off flock flaps its wings */
+.bird-wing {
+  transform-box: fill-box;
+  transform-origin: 100% 100%;
+  animation: bat-flap 0.45s ease-in-out infinite alternate;
+}
+
+.bird-flap {
+  animation: bird-bob 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes bird-bob {
+  from { transform: translateY(0); }
+  to { transform: translateY(-1.2px); }
+}
+
 @keyframes bat-fly {
   0% { transform: translate(0, 0); }
   25% { transform: translate(55px, -7px); }
@@ -957,6 +1185,14 @@ body[data-season="halloween"] .garland-leaf:nth-child(3n) { fill: #f28c28; }
   .leaf-sway,
   .bat,
   .bat-wing,
+  .bird-wing,
+  .bird-flap,
+  .present.wiggle,
+  .twinkling .tree-star,
+  .twinkling .sparkle,
+  #lights.chase .light-bulb,
+  .tree-body.wiggle,
+  .light-bulb,
   .plant-leaves,
   .dizzy-ring,
   .snot-bubble,

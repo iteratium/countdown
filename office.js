@@ -78,19 +78,24 @@ function makeCat(x, y) {
   const pawL = svg("ellipse", { cx: -5, cy: -2, rx: 3.5, ry: 2.5, fill: "#fff", stroke: INK, "stroke-width": 1.2 }, body);
   const pawR = svg("ellipse", { cx: 5, cy: -2, rx: 3.5, ry: 2.5, fill: "#fff", stroke: INK, "stroke-width": 1.2 }, body);
   const lunch = makeLunch(body);
+  const cocoa = makeCocoa(body);
+  const gift = makeGiftBox(body);
+  gift.setAttribute("transform", "translate(0 -1)");
+  gift.setAttribute("display", "none");
 
   const bubble = makeBubble(root);
 
   return {
     x, y, tx: x, ty: y, color, name,
     state: "rest", timer: 1, place: null, bubble, phase: Math.random() * 10, age: 0,
-    root, body, tail, face, pawL, pawR, lunch, eating: false, silly: Math.random() < PERSONAS[name].silly,
+    root, body, tail, face, pawL, pawR, lunch, eating: false, cocoa, gift, sipping: false, gifted: false, silly: Math.random() < PERSONAS[name].silly,
   };
 }
 
 // Round head with pointed ears, whiskers and pink cheeks, centred on (0, -22).
 // Used by the office cats and the progress-bar walker; returns the face. Office cats
-// (withHat) also carry a witch hat that style.css only shows around Halloween.
+// (withHat) also carry a witch hat and a Santa hat that style.css only shows around
+// Halloween and Christmas.
 function makeHead(parent, color, withHat = false) {
   const outline = { stroke: INK, "stroke-width": 1.5, "stroke-linejoin": "round" };
   for (const s of [-1, 1]) {
@@ -105,8 +110,62 @@ function makeHead(parent, color, withHat = false) {
   svg("ellipse", { cx: -7, cy: -18.2, rx: 1.9, ry: 1, fill: "#f08a8a", opacity: 0.55 }, parent);
   svg("ellipse", { cx: 7, cy: -18.2, rx: 1.9, ry: 1, fill: "#f08a8a", opacity: 0.55 }, parent);
   const face = makeFace(parent);
-  if (withHat) makeWitchHat(parent);
+  if (withHat) {
+    makeWitchHat(parent);
+    makeSantaHat(parent);
+    makeScarf(parent);
+  }
   return face;
+}
+
+// Cosy striped scarf snug under the chin with one end hanging down; style.css shows it in
+// winter and at Christmas.
+function makeScarf(parent) {
+  const g = svg("g", { class: "scarf" }, parent);
+  const line = { stroke: INK, "stroke-width": 1.2, "stroke-linejoin": "round", "stroke-linecap": "round" };
+  svg("path", { d: "M3 -11.5 L8 -10.8 L8.8 -4.6 L4 -5 Z", fill: "#3aa46b", ...line }, g);
+  svg("path", { d: "M3.3 -8.2 L8.4 -7.5 M3.7 -6 L8.6 -5.4", fill: "none", stroke: "#fdf6ec", "stroke-width": 1.2, "stroke-linecap": "round" }, g);
+  svg("path", { d: "M4.6 -4.8 v1.6 M6.4 -4.7 v1.6 M8.2 -4.6 v1.6", fill: "none", stroke: INK, "stroke-width": 0.8, "stroke-linecap": "round" }, g);
+  svg("rect", { x: -10.2, y: -14.8, width: 20.4, height: 4.8, rx: 2.4, fill: "#3aa46b", ...line }, g);
+  for (const x of [-7, -3, 1, 5]) svg("rect", { x, y: -14.3, width: 1.5, height: 3.8, fill: "#fdf6ec" }, g);
+}
+
+// Santa hat: red body drooping to the right, a wide near-rectangular fluffy white brim
+// and a fluffy pom-pom. Fluff is a cluster of circles drawn twice (outlined, then plain
+// white on top) so only the cloud's outer edge keeps its line. Returns the group; the
+// robot (guard.js) reuses it, scaled up.
+function makeSantaHat(parent) {
+  const g = svg("g", { class: "hat-christmas" }, parent);
+  svg("path", {
+    d: "M-9.5 -32 C-9 -40 -4 -44.5 2 -44.5 C7 -44.5 11.5 -43.5 14 -39.5 L9.5 -32 Z",
+    fill: "#d64545", stroke: INK, "stroke-width": 1.2, "stroke-linejoin": "round",
+  }, g);
+  svg("path", { d: "M-5 -40 Q-1 -42.5 3 -42", fill: "none", stroke: "#f08080", "stroke-width": 1, "stroke-linecap": "round" }, g);
+  // the brim and the pom-pom are separate clouds, the pom-pom drawn on top, so its outline
+  // keeps it distinct from the brim
+  const brim = [
+    ["rect", { x: -11.2, y: -34.6, width: 22.4, height: 5, rx: 2.2 }],
+    ...[-9.5, -5, -0.5, 4, 8.5].map((cx) => ["circle", { cx, cy: -29.8, r: 1.9 }]),
+    ...[-9.5, -5, -0.5, 4, 8.5].map((cx) => ["circle", { cx, cy: -34.4, r: 1.7 }]),
+    ["circle", { cx: -11.4, cy: -32.1, r: 2.4 }],
+    ["circle", { cx: 11.4, cy: -32.1, r: 2.4 }],
+  ];
+  const pom = [
+    ["circle", { cx: 14.3, cy: -40.3, r: 3.2 }],
+    ["circle", { cx: 12.1, cy: -42, r: 1.8 }],
+    ["circle", { cx: 16.5, cy: -41.8, r: 1.8 }],
+    ["circle", { cx: 16.7, cy: -38.4, r: 1.8 }],
+    ["circle", { cx: 12, cy: -38.4, r: 1.8 }],
+    ["circle", { cx: 14.3, cy: -43.2, r: 1.7 }],
+  ];
+  for (const cloud of [brim, pom]) {
+    for (const outlined of [true, false]) {
+      for (const [tag, attrs] of cloud) {
+        svg(tag, outlined ? { ...attrs, fill: "#fff", stroke: INK, "stroke-width": 1 } : { ...attrs, fill: "#fff" }, g);
+      }
+    }
+  }
+  return g;
 }
 
 function makeWitchHat(parent) {
@@ -119,7 +178,8 @@ function makeWitchHat(parent) {
 
 // A witch hat is taller than the ears, so bubbles above a cat's head sit higher then.
 function hatLift() {
-  return document.body.dataset.season === "halloween" ? 8 : 0;
+  const season = document.body.dataset.season;
+  return season === "halloween" ? 8 : season === "christmas" ? 8 : 0;
 }
 
 // Doodle expressions: each is its own group of a few bold strokes (eyes, mouth and small
@@ -392,6 +452,40 @@ function setExpression(cat, name) {
 }
 
 // Rice bowl held in the left paw, chopsticks in the right; swapped in for the paws at lunch.
+// A small wrapped present standing on (0, 0), about 9 wide and 8 tall. Cats carry one
+// home from Keibi-kun, and the robot holds one out (guard.js).
+function makeGiftBox(parent) {
+  const g = svg("g", {}, parent);
+  const line = { stroke: INK, "stroke-width": 1, "stroke-linejoin": "round", "stroke-linecap": "round" };
+  svg("rect", { x: -4.5, y: -8, width: 9, height: 8, rx: 1, fill: "#e63946", ...line }, g);
+  svg("rect", { x: -1, y: -8, width: 2, height: 8, fill: "#f6c25e" }, g);
+  svg("rect", { x: -4.5, y: -5.2, width: 9, height: 1.8, fill: "#f6c25e" }, g);
+  svg("ellipse", { cx: -1.8, cy: -8.6, rx: 1.9, ry: 1.2, transform: "rotate(-25 -1.8 -8.6)", fill: "#f6c25e", ...line, "stroke-width": 0.7 }, g);
+  svg("ellipse", { cx: 1.8, cy: -8.6, rx: 1.9, ry: 1.2, transform: "rotate(25 1.8 -8.6)", fill: "#f6c25e", ...line, "stroke-width": 0.7 }, g);
+  return g;
+}
+
+// A red mug of hot cocoa with two marshmallows, held in both paws while a cat stands at the
+// coffee machine in winter. Returns { g, mug }; the mug lifts a little to sip.
+function makeCocoa(body) {
+  const g = svg("g", { display: "none" }, body);
+  const mug = svg("g", {}, g);
+  const line = { stroke: INK, "stroke-width": 1.1, "stroke-linejoin": "round" };
+  [-1.6, 1.6].forEach((x, i) => svg("path", {
+    class: "rice-steam", style: `animation-delay: ${-i * 0.8}s`,
+    d: `M${x} -10.5 q-1.2 -1.6 0 -3.2 q1.2 -1.6 0 -3.2`,
+    fill: "none", stroke: INK, "stroke-width": 1, "stroke-linecap": "round",
+  }, mug));
+  svg("path", { d: "M3.2 -7.4 q3.4 0 3.4 2.6 q0 2.6 -3.4 2.6", fill: "none", ...line, "stroke-linecap": "round" }, mug);
+  svg("path", { d: "M-3.6 -8.6 h7.2 v5.4 q0 2.4 -3.6 2.4 q-3.6 0 -3.6 -2.4 Z", fill: "#e63946", ...line }, mug);
+  svg("ellipse", { cx: 0, cy: -8.6, rx: 3.6, ry: 1.1, fill: "#7b4a2d", ...line }, mug);
+  svg("rect", { x: -2.8, y: -10.2, width: 2.5, height: 2.1, rx: 0.8, fill: "#fff", stroke: INK, "stroke-width": 0.6 }, mug);
+  svg("rect", { x: 0.4, y: -9.9, width: 2.3, height: 2, rx: 0.8, fill: "#fff", stroke: INK, "stroke-width": 0.6 }, mug);
+  svg("ellipse", { cx: -4, cy: -4.4, rx: 1.9, ry: 1.5, fill: "#fff", ...line }, mug);
+  svg("ellipse", { cx: 4, cy: -4.4, rx: 1.9, ry: 1.5, fill: "#fff", ...line }, mug);
+  return { g, mug };
+}
+
 function makeLunch(body) {
   const g = svg("g", { display: "none" }, body);
   const line = { stroke: INK, "stroke-width": 1.2, "stroke-linejoin": "round" };
@@ -601,6 +695,7 @@ function chooseNext(cat, afterWork) {
   leavePlace(cat);
   if (officeClosed() && !guardOnDuty()) return goHome(cat);
   if (lunchTime()) return goToLunch(cat);
+  if (treeSeason() && !presentsSpot.owner && Math.random() < 0.2) return goToPresents(cat);
   const r = Math.random();
   if (afterWork) {
     if (r < 0.4) goToCoffee(cat);
@@ -612,7 +707,69 @@ function chooseNext(cat, afterWork) {
   else goWander(cat);
 }
 
+// In winter (and at Christmas) a cat now and then drops by the presents at the foot of the
+// plant: it gives one a poke and says so, or (a third of the time) tries to climb the tree.
+// The presents sit against the back wall, so the cat stands on the free floor just left of
+// them (in front of the coffee cabinet), reached along the left edge so it never walks
+// through a desk.
+const presentsSpot = { x: -12, y: 98, owner: null };
+const presentsLane = { x: -12, y: 140 };
+
+function treeSeason() {
+  const { season } = document.body.dataset;
+  return season === "christmas" || season === "winter";
+}
+
+function goToPresents(cat) {
+  if (presentsSpot.owner) return goWander(cat);
+  presentsSpot.owner = cat;
+  cat.place = presentsSpot;
+  walkTo(cat, presentsLane, () => {
+    cat.dest = presentsSpot;
+    walkStraight(cat, presentsSpot, () => {
+      cat.state = "present";
+      cat.timer = 5 + Math.random() * 2;
+      cat.treeGag = Math.random() < 0.33;
+      cat.pokeIn = 0.8;
+    });
+  });
+  cat.dest = presentsSpot;
+}
+
+// Click the star on the tree: it twinkles, sparkles fly and the lights chase for 4 seconds.
+// TREE_STAR is the star's spot in the scene (the plant is drawn scaled 0.85 around (21, 84)).
+const TREE_STAR = { x: 21, y: 84 + 0.85 * (10.5 - 84) };
+let twinkleTimer = null;
+function twinkleStar() {
+  if (reduceMotion) return;
+  const tree = document.querySelector(".tree-body");
+  const lights = document.getElementById("lights");
+  tree.classList.add("twinkling");
+  lights.classList.add("chase");
+  clearTimeout(twinkleTimer);
+  twinkleTimer = setTimeout(() => {
+    tree.classList.remove("twinkling");
+    lights.classList.remove("chase");
+  }, 4000);
+}
+
+function pokeDecor(cat) {
+  const target = cat.treeGag ? document.querySelector(".tree-body") : pickOne([...document.querySelectorAll(".present")]);
+  if (target && !reduceMotion) {
+    target.classList.remove("wiggle");
+    void target.getBoundingClientRect(); // restart the animation
+    target.classList.add("wiggle");
+  }
+  talk(cat);
+}
+
 function finishState(cat) {
+  // back down the lane first, so the cat doesn't cut through the desks
+  if (cat.state === "present") {
+    leavePlace(cat);
+    cat.dest = presentsLane;
+    return walkStraight(cat, presentsLane, () => chooseNext(cat, false));
+  }
   // half the cats stagger out of a meeting dizzy for a few seconds
   if (cat.state === "meet" && Math.random() < 0.5) cat.dizzy = 3 + Math.random() * 2;
   chooseNext(cat, cat.state === "work");
@@ -667,9 +824,12 @@ function pickLine(cat) {
   if (catData) {
     const { state } = cat;
     let key = "wander";
-    if (cat.leaving) key = "leaving";
+    if (cat.gifted) key = "gifted";
+    else if (cat.leaving) key = "leaving";
     else if (cat.scolded) key = "scolded";
     else if (cat.dizzy > 0) key = "dizzy";
+    else if (state === "present") key = cat.treeGag ? "tree" : "present";
+    else if (state === "coffee" && treeSeason()) key = "cocoa";
     else if (state === "coffee" || state === "meet" || state === "lunch") key = state;
     else if (guardOnDuty()) key = "late";
     else if (officeClosed()) key = "weekend";
@@ -677,6 +837,11 @@ function pickLine(cat) {
     const own = catData.cats[cat.name]?.lines[key];
     const shared = key === "work" ? catData.shared.work[document.body.dataset.mood] : catData.shared[key];
     pool = own && shared ? (Math.random() < 0.65 ? own : shared) : own || shared;
+    // in winter (and at Christmas) a cat often talks about the season instead
+    const season = document.body.dataset.season;
+    if ((season === "christmas" || season === "winter") && !["leaving", "scolded", "dizzy", "present", "tree", "gifted", "cocoa"].includes(key) && Math.random() < 0.4) {
+      pool = [...(catData.cats[cat.name]?.lines[season] || []), ...(catData.shared[season] || [])];
+    }
   }
   const fallback = ["Meow!"];
   const fresh = (pool || fallback).filter((line) => line !== cat.lastLine);
@@ -765,6 +930,20 @@ function updateLunch(cat, t) {
   cat.lunch.hand.setAttribute("transform", `translate(${(2 + 2 * bite).toFixed(2)} ${(-5 - 8 * bite).toFixed(2)})`);
 }
 
+// In winter a cat at the coffee machine holds hot cocoa instead of nothing, lifting it to sip.
+function updateCocoa(cat, t) {
+  const sipping = cat.state === "coffee" && treeSeason();
+  if (sipping !== cat.sipping) {
+    cat.sipping = sipping;
+    cat.cocoa.g.setAttribute("display", sipping ? "inline" : "none");
+    cat.pawL.setAttribute("display", sipping ? "none" : "inline");
+    cat.pawR.setAttribute("display", sipping ? "none" : "inline");
+  }
+  if (!sipping) return;
+  const sip = reduceMotion ? 0 : Math.max(0, Math.sin(t * 1.1 + cat.phase)) ** 2;
+  cat.cocoa.mug.setAttribute("transform", `translate(0 ${(-4 * sip).toFixed(2)})`);
+}
+
 // At the desk each cat has its own mood, drawn from a mix that brightens through the
 // day and tilted by its personality, so the office is never all one face. Tears are rare.
 const WORK_MOOD_MIX = {
@@ -826,9 +1005,11 @@ function walkerExpression() {
 function pickExpression(cat) {
   if (cat.age < 0.9) return "amazed";
   if (cat.scolded) return "nervous";
+  if (cat.gifted) return "touched";
   if (cat.leaving) return cat.leaveMood;
   if (cat.dizzy > 0) return "dizzy";
   if (cat.state === "coffee") return "calm";
+  if (cat.state === "present") return cat.treeGag ? "determined" : "amazed";
   if (cat.state === "lunch") return "happy";
   if (cat.state === "meet") return cat.meetMood;
   if (cat.state === "work") return cat.workMood || "neutral";
@@ -861,6 +1042,7 @@ function updateCat(cat, dt, t) {
     cat.timer -= dt;
     moveIfCrowded(cat, dt);
     typing = cat.state === "work";
+    if (cat.state === "present" && cat.pokeIn > 0 && (cat.pokeIn -= dt) <= 0) pokeDecor(cat);
     squish = typing || cat.state === "meet" || cat.state === "lunch" ? 0.92 : 1;
     if (cat.timer <= 0) finishState(cat);
   }
@@ -878,6 +1060,8 @@ function updateCat(cat, dt, t) {
   cat.pawL.setAttribute("cy", pawBase + pawLift);
   cat.pawR.setAttribute("cy", pawBase - pawLift);
   updateLunch(cat, t);
+  updateCocoa(cat, t);
+  cat.gift.setAttribute("display", cat.gifted ? "inline" : "none");
 
   updateBubble(cat, dt, t);
   updateSpeech(cat, bob, dt);
@@ -954,6 +1138,7 @@ function spawnFromEvent(event) {
   const y = ((event.clientY - rect.top) / rect.height) * 180;
   const cat = catAt(x, y);
   if (cat) return talk(cat);
+  if (treeSeason() && Math.hypot(x - TREE_STAR.x, y - TREE_STAR.y) < 9) return twinkleStar();
   addCat(
     Math.min(FLOOR.maxX, Math.max(FLOOR.minX, x)),
     Math.min(FLOOR.maxY, Math.max(FLOOR.minY, y))

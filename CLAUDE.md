@@ -21,18 +21,24 @@ the workday is to being over. Goal: simple and fast, like `profile`.
   glass wall. Cats only cross that wall through its door (`walkTo` in
   `office.js` routes them via `MEETING_DOOR`). Also holds the "How it works"
   `<dialog>` (opened from the button under the office) that describes every
-  feature for visitors: keep it in sync when features change.
+  feature for visitors: keep it in sync when features change. Next to it, the "Scenes"
+  `<dialog>` (`#scenes`, "See more scenes") is a gallery of cards linking to every preview
+  (`?season=…`, `?sky=…&weather=…`): add a card there whenever a new scene or season is
+  added. Weather and time-of-day cards carry `season=off` so they show a plain office instead of whatever
+  the real date's decor is. `script.js` marks the card matching the current `?query` with `aria-current`.
 - `style.css` — layout/styling, sky/weather states keyed off `data-sky` and
   `data-weather`, Friday-night confetti animation
 - `quotes.json` — mood-matched quotes, keyed by mood stage
 - `cats.json` — the cats' personalities (`cats`: 12 names, each with a tagline and its
   own lines per situation) and `shared` lines that know the time of day (`work` is
-  keyed by mood stage). A line may have two rows split by `\n`. `office.js` loads it
+  keyed by mood stage). Each cat also has `christmas`, `winter` and `present` lines, and `shared` has `christmas`, `winter`, `present` and `tree`. A line may have two rows split by `\n`. `office.js` loads it
   (`talk()`, `pickLine()`); clicking a cat talks, clicking anywhere else hires a cat.
   Names come from the keys of `cats`, so keep at least `MAX_CATS` of them.
 - `script.js` — countdown/mood logic (9am start, 6pm target, weekends,
   lunch 12–1, off-clock state, Friday-evening confetti), quote picking. Sets
   `data-clock`, `data-mood` and `data-lunch` on `<body>` for the office.
+  While `data-season="christmas"` (Dec 1–25) a line under the clock (`#xmas-count`,
+  `christmasText()`) counts the days to Christmas.
   Also drives the "loading" progress bar: fill percentage, the cat riding
   it, and the mood-matched caption ("Freedom loading… please wait").
 - `office.js` — the cat office: cats walk between desks, coffee, meetings and
@@ -43,23 +49,24 @@ the workday is to being over. Goal: simple and fast, like `profile`.
   Cats spread out so faces stay readable: coffee has 4 standing slots
   (`coffeeSlots`), wandering and lunch spots come from `spreadPoint()` (furthest from
   other cats, by `crowding()`), and a resting cat stacked on another moves along
-  (`moveIfCrowded()`). `makeHead()` also draws the progress-bar walker. Defines the global `svg()` helper.
+  (`moveIfCrowded()`). In winter and at Christmas (`treeSeason()`) a cat sometimes visits the presents (`goToPresents()`, state `present`): it pokes one so it hops, or a third of the time shakes the tree (`pokeDecor()`, `.wiggle` in `style.css`), and says a `present`/`tree` line; in winter a cat at the coffee machine holds a mug of cocoa (`makeCocoa()`, `updateCocoa()`, `cocoa` lines); clicking the tree's star (`twinkleStar()`) makes it pulse with sparkles while the lights chase (`.twinkling`, `#lights.chase`); cats also talk about the season 40% of the time. `makeHead()` also draws the progress-bar walker. Defines the global `svg()` helper.
 - `sky.js` — Tokyo sky: time of day from Tokyo sunrise/sunset, weather from
   Open-Meteo every 15 min. Sets `data-sky` and `data-weather` on `<body>`
   and writes "Tokyo 29°C, clear" into the clock line under the countdown;
   `?sky=…&weather=…` previews a state. Loads after `office.js` (uses `svg()`).
 - `season.js` — seasonal decor: sets `data-season` on `<body>` (`autumn` Sep–Nov,
-  `halloween` Sep 25–Oct 31; `?season=…` previews) and draws the maple garland and
-  falling leaves. The rest of the decor (cobwebs, pumpkins, bats, cat and Keibi-kun witch hats, and the meeting room
+  `halloween` Sep 25–Oct 31, `winter` Dec 26–Feb, `christmas` Dec 1–25; `?season=…` previews)
+  and draws the maple garland, the twinkling string lights (winter and christmas) and
+  falling leaves. Cats wear a striped scarf (`.scarf`, `makeScarf()`) in winter and christmas; cats and Keibi-kun wear fluffy Santa hats (`.hat-christmas`, `makeSantaHat()` in `office.js`) at christmas; in winter and christmas the office plant (`.plant-green`) swaps for a Christmas tree with presents (`.plant-tree`, two groups: `.tree-body` behind the pot, `.present`s in front). The rest of the decor (cobwebs, pumpkins, bats, cat and Keibi-kun witch hats, and the meeting room
   bunting/ghosts/spider/candy) is
   in `index.html`/`office.js` and shown by `style.css` off `data-season`. Loads
   after `sky.js` (uses `svg()`, `WIN`, `rand`, `preview`). The maple leaf shape
-  (`#maple`, `#maple-veins`) is defined once in `index.html`'s `<defs>`; the office
-  plant (a potted maple), the garland and the falling leaves all `<use>` it.
+  (`#maple`, `#maple-veins`) is defined once in `index.html`'s `<defs>`; the garland
+  and the falling leaves `<use>` it. The office plant is a plain green houseplant.
 - `guard.js` — Keibi-kun, the security-guard robot. After 6 PM on workdays
   (`guardOnDuty()` in `office.js`) cats keep working late; the robot rolls in,
   sends each one home, then patrols (flashlight at night) and turns the office
-  lights off once it is empty at night. Loads last; uses `office.js` globals.
+  lights off once it is empty at night. At Christmas (`data-season="christmas"`) it first hands each scolded cat a present (state `gift`, `makeGiftBox()` in `office.js`) before it leaves. Loads last; uses `office.js` globals.
 
 ## Deployment
 

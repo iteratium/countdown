@@ -15,6 +15,7 @@ const quoteEl = document.getElementById("quote");
 const progressEl = document.getElementById("progress");
 const barPctEl = document.getElementById("bar-pct");
 const barCaptionEl = document.getElementById("bar-caption");
+const xmasEl = document.getElementById("xmas-count");
 
 const CONFETTI_COLORS = ["#f4a259", "#e07a5f", "#81b29a", "#f2cc8f", "#3d405b"];
 
@@ -189,6 +190,19 @@ function barCaption(state, now, lunch) {
   return "Freedom: 100% ✓";
 }
 
+// While the Christmas decor is up (season.js sets data-season="christmas" for Dec 1-25),
+// a line under the clock counts the days to the 25th. With ?season=christmas outside
+// December it counts down to the next one.
+function christmasText(now) {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let xmas = new Date(now.getFullYear(), 11, 25);
+  if (xmas < today) xmas = new Date(now.getFullYear() + 1, 11, 25);
+  const days = Math.round((xmas - today) / 86400000);
+  if (days === 0) return "🎄 Merry Christmas!";
+  if (days === 1) return "🎄 1 day to go: Santa Claws arrives tonight!";
+  return `🎄 ${days} days until Christmas`;
+}
+
 function tick() {
   const now = new Date();
   const state = computeState(now);
@@ -211,6 +225,9 @@ function tick() {
     document.title = `${state.label} · ${TITLE}`;
   }
   clockEl.textContent = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  const xmas = document.body.dataset.season === "christmas" ? christmasText(now) : "";
+  xmasEl.hidden = !xmas;
+  xmasEl.textContent = xmas;
 
   const hour = now.getHours();
   const lunch = state.working && hour >= LUNCH_START_HOUR && hour < LUNCH_END_HOUR;
@@ -237,12 +254,26 @@ const workHours = WORK_END_HOUR - WORK_START_HOUR;
 progressEl.style.setProperty("--lunch-start", ((LUNCH_START_HOUR - WORK_START_HOUR) / workHours) * 100);
 progressEl.style.setProperty("--lunch-end", ((LUNCH_END_HOUR - WORK_START_HOUR) / workHours) * 100);
 
-// "How it works" pop-up: open from the button under the office; Esc, ✕ or a click outside closes it
+// "How it works" and "Scenes" pop-ups: open from the buttons under the office; Esc, ✕ or a click outside closes them
 const aboutEl = document.getElementById("about");
+const scenesEl = document.getElementById("scenes");
 document.getElementById("about-open").addEventListener("click", () => aboutEl.showModal());
-aboutEl.addEventListener("click", (event) => {
-  if (event.target === aboutEl) aboutEl.close();
+document.getElementById("scenes-open").addEventListener("click", () => scenesEl.showModal());
+document.getElementById("about-to-scenes").addEventListener("click", () => {
+  aboutEl.close();
+  scenesEl.showModal();
 });
+for (const dialog of [aboutEl, scenesEl]) {
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+}
+
+// mark the scene card that matches the page's current ?query, whatever order its parameters come in
+const sceneKey = (search) => [...new URLSearchParams(search)].map(([k, v]) => `${k}=${v}`).sort().join("&");
+for (const card of document.querySelectorAll("a.scene")) {
+  if (sceneKey(new URL(card.href).search) === sceneKey(location.search)) card.setAttribute("aria-current", "page");
+}
 
 fetch("quotes.json", { cache: "no-cache" }).then((res) => res.json()).then((quotesData) => {
   quotes = quotesData;
